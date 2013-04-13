@@ -1,3 +1,7 @@
+# Atmel Studio files
+Debug/
+Release/
+
 # Object files
 *.o
 
