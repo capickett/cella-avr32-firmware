@@ -15,5 +15,8 @@ int main (void)
 {
 	board_init();
 
-	// Insert application code here, after the board has been initialized.
+	LED_On(LED0);
+	LED_On(LED1);
+	LED_On(LED2);
+	LED_On(LED3);
 }
