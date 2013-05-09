@@ -2,10 +2,10 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectVersion>6.0</ProjectVersion>
-    <ToolchainName>com.Atmel.AVRGCC32</ToolchainName>
+    <ProjectVersion>6.1</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC32.C</ToolchainName>
     <ProjectGuid>{30c09ac2-69d3-4174-806b-756d8cb12f70}</ProjectGuid>
-    <avrdevice>AT32UC3A3256</avrdevice>
+    <avrdevice>AT32UC3A3256S</avrdevice>
     <avrdeviceseries>uc3a3_a4</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -22,7 +22,7 @@
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfVersion>3.5.1</AsfVersion>
     <AsfFrameworkConfig>
-      <framework-data xmlns="">
+      <framework-data>
   <options>
     <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
@@ -141,13 +141,51 @@
     <file path="src/asf/common/utils/interrupt/interrupt_avr32.h" framework="" version="3.5.1" source="common/utils/interrupt/interrupt_avr32.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/asf/common/utils/parts.h" framework="" version="3.5.1" source="common/utils/parts.h" changed="False" content-id="Atmel.ASF" />
   </files>
-  <documentation help="http://asf.atmel.com/docs/3.5.1/common.services.usb.class.msc.device.example.evk1104/html/index.html" />
+  <documentation help="" />
+  <offline-documentation help="" />
+  <dependencies>
+    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.5.1" />
+  </dependencies>
 </framework-data>
     </AsfFrameworkConfig>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <CacheFlash>true</CacheFlash>
+    <UncachedRange />
+    <BootSegment>2</BootSegment>
+    <avrtoolinterface>JTAG</avrtoolinterface>
+    <avrtool>com.atmel.avrdbg.tool.avrdragon</avrtool>
+    <com_atmel_avrdbg_tool_avrdragon>
+      <ToolType xmlns="">com.atmel.avrdbg.tool.avrdragon</ToolType>
+      <ToolName xmlns="">AVR Dragon</ToolName>
+      <ToolNumber xmlns="">00A20003451C</ToolNumber>
+      <StimuliFile xmlns="">
+      </StimuliFile>
+      <Channel xmlns="">
+        <host>127.0.0.1</host>
+        <port>58048</port>
+        <ssl>False</ssl>
+      </Channel>
+      <ToolOptions xmlns="">
+        <InterfaceName>JTAG</InterfaceName>
+        <InterfaceProperties>
+          <JtagDbgClock>200000</JtagDbgClock>
+          <SwdClock>249000</SwdClock>
+          <JtagProgClock>200000</JtagProgClock>
+          <IspClock>150000</IspClock>
+          <JtagInChain>false</JtagInChain>
+          <JtagEnableExtResetOnStartSession>false</JtagEnableExtResetOnStartSession>
+          <JtagDevicesBefore>0</JtagDevicesBefore>
+          <JtagDevicesAfter>0</JtagDevicesAfter>
+          <JtagInstrBitsBefore>0</JtagInstrBitsBefore>
+          <JtagInstrBitsAfter>0</JtagInstrBitsAfter>
+        </InterfaceProperties>
+      </ToolOptions>
+    </com_atmel_avrdbg_tool_avrdragon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
-      <Avr32Gcc>
+      <Avr32Gcc xmlns="">
   <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
   <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
   <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
@@ -207,7 +245,7 @@
   <avr32gcc.linker.general.DoNotUseStandardStartFiles>True</avr32gcc.linker.general.DoNotUseStandardStartFiles>
   <avr32gcc.linker.libraries.Libraries>
     <ListValues>
-      <Value>m</Value>
+      <Value>libm</Value>
     </ListValues>
   </avr32gcc.linker.libraries.Libraries>
   <avr32gcc.linker.optimization.GarbageCollectUnusedSections>True</avr32gcc.linker.optimization.GarbageCollectUnusedSections>
@@ -293,7 +331,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
-      <Avr32Gcc>
+      <Avr32Gcc xmlns="">
   <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
   <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
   <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
@@ -354,7 +392,7 @@
   <avr32gcc.linker.general.DoNotUseStandardStartFiles>True</avr32gcc.linker.general.DoNotUseStandardStartFiles>
   <avr32gcc.linker.libraries.Libraries>
     <ListValues>
-      <Value>m</Value>
+      <Value>libm</Value>
     </ListValues>
   </avr32gcc.linker.libraries.Libraries>
   <avr32gcc.linker.optimization.GarbageCollectUnusedSections>True</avr32gcc.linker.optimization.GarbageCollectUnusedSections>
