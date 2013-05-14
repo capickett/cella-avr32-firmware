@@ -43,8 +43,6 @@
 #ifndef CONF_BOARD_H_INCLUDED
 #define CONF_BOARD_H_INCLUDED
 
-// Enable AT45DBX component.
-#define CONF_BOARD_AT45DBX
 // Enable SD and MMC card component.
 #define CONF_BOARD_SD_MMC_MCI
 
