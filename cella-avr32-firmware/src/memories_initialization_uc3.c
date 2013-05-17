@@ -124,10 +124,10 @@ void memories_initialization(void)
 	
 	sysclk_enable_pbb_module(SYSCLK_AES);
 	u_avr32_hmatrix_scfg.scfg =
-			AVR32_HMATRIX.SCFG[AVR32_HMATRIX_SLAVE_AES];
+			AVR32_HMATRIX.scfg[AVR32_HMATRIX_SLAVE_AES];
 	u_avr32_hmatrix_scfg.SCFG.defmstr_type =
 			AVR32_HMATRIX_DEFMSTR_TYPE_LAST_DEFAULT;
-	AVR32_HMATRIX.SCFG[AVR32_HMATRIX_SLAVE_AES] =
+	AVR32_HMATRIX.scfg[AVR32_HMATRIX_SLAVE_AES] =
 			u_avr32_hmatrix_scfg.scfg;
 #endif
 

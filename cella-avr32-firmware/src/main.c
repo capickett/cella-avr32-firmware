@@ -47,24 +47,6 @@
 
 static bool main_b_msc_enable = false;
 
-static void aes_init(void) {
-	aes_config_t      AesConf;
-	//====================
-	// Configure the AES.
-	//====================
-	AesConf.ProcessingMode = AES_PMODE_CIPHER;  // Cipher
-	AesConf.ProcessingDelay = 0;                // No delay: best performance
-	AesConf.StartMode = AES_START_MODE_DMA;     // DMA mode
-	AesConf.KeySize = AES_KEY_SIZE_256;         // 256bit cryptographic key
-	AesConf.OpMode = AES_CBC_MODE;              // CBC cipher mode
-	AesConf.LodMode = 0;                        // LODMODE == 0 : the end of the
-	// encryption is notified by the DMACA transfer complete interrupt. The output
-	// is available in the OutputData[] buffer.
-	AesConf.CFBSize = 0;                        // Don't-care because we're using the CBC mode.
-	AesConf.CounterMeasureMask = 0;             // Disable all counter measures.
-	aes_configure(&AVR32_AES, &AesConf);
-}
-
 /*! \brief Main function. Execution starts here.
  */
 int main(void)
@@ -81,7 +63,6 @@ int main(void)
 	ui_powerdown();
 
 	memories_initialization();
-	aes_init();
 
 	// Start USB stack to authorize VBus monitoring
 	udc_start();

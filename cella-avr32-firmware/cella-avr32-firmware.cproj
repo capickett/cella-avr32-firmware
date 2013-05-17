@@ -25,13 +25,17 @@
       <framework-data>
   <options>
     <option id="avr32.drivers.aes" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.dmaca" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.components.memory.virtual_mem" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.basic.clock" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.basic.sleepmgr" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.usb.class.device" value="Add" config="mass_storage" content-id="Atmel.ASF" />
-    <option id="avr32.drivers.dmaca" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.cpu.cycle_counter" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.delay" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.mci.v2" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.components.memory.data_flash.at45dbx.ctrl_access" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.usb.class.msc.device.example" value="Add" config="" content-id="Atmel.ASF" />
   </options>

@@ -9,9 +9,10 @@
 #ifndef AES_DMA_H_
 #define AES_DMA_H_
 
+#include "stdbool.h"
 #include "dmaca.h"
 #include "aes.h"
 
-void ram_aes_ram(unsigned short int u16BufferSize, unsigned int *pSrcBuf, unsigned int *pDstBuf);
+void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *pSrcBuf, unsigned int *pDstBuf);
 
 #endif /* INCFILE1_H_ */
