@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "cella-avr32-firmware", "cella-avr32-firmware\cella-avr32-firmware.cproj", "{30C09AC2-69D3-4174-806B-756D8CB12F70}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "cella-avr32-firmware", "cella-avr32-firmware.cproj", "{30C09AC2-69D3-4174-806B-756D8CB12F70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
