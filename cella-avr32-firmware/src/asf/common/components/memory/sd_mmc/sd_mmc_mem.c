@@ -48,6 +48,7 @@
 #include "conf_sd_mmc.h"
 #include "sd_mmc.h"
 #include "sd_mmc_mem.h"
+#include "aes_dma.h"
 
 /**
  * \ingroup sd_mmc_stack_mem
@@ -156,6 +157,9 @@ uint8_t sector_buf_0[SD_MMC_BLOCK_SIZE];
 COMPILER_WORD_ALIGNED
 uint8_t sector_buf_1[SD_MMC_BLOCK_SIZE];
 
+COMPILER_WORD_ALIGNED
+uint8_t aes_buf_0[SD_MMC_BLOCK_SIZE];
+
 Ctrl_status sd_mmc_usb_read_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 {
 	bool b_first_step = true;
@@ -169,34 +173,18 @@ Ctrl_status sd_mmc_usb_read_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 	default:
 		return CTRL_FAIL;
 	}
-	// Pipeline the 2 transfer in order to speed-up the performances
-	nb_step = nb_sector + 1;
+	nb_step = nb_sector; // W/O pipeline optimization
 	while (nb_step--) {
-		if (nb_step) { // Skip last step
-			// MCI -> RAM
-			if (SD_MMC_OK != sd_mmc_start_read_blocks(((nb_step % 2) == 0) ?
-					sector_buf_0 : sector_buf_1, 1)) {
-				return CTRL_FAIL;
-			}
+		if (SD_MMC_OK != sd_mmc_start_read_blocks(sector_buf_0, 1)) {
+			return CTRL_FAIL;
 		}
-		if (!b_first_step) { // Skip first step
-			// RAM -> USB
-			if (!udi_msc_trans_block(true,
-					((nb_step % 2) == 0) ?
-					sector_buf_1 : sector_buf_0,
-					SD_MMC_BLOCK_SIZE,
-					NULL)) {
-				return CTRL_FAIL;
-			}
-		} else {
-			b_first_step = false;
+		if (SD_MMC_OK != sd_mmc_wait_end_of_read_blocks()) {
+			return CTRL_FAIL;
 		}
-		if (nb_step) { // Skip last step
-			if (SD_MMC_OK != sd_mmc_wait_end_of_read_blocks()) {
-				return CTRL_FAIL;
-			}
+		ram_aes_ram(false, SD_MMC_BLOCK_SIZE/sizeof(unsigned int), sector_buf_0, aes_buf_0);
+		if (!udi_msc_trans_block(true, aes_buf_0, SD_MMC_BLOCK_SIZE, NULL)) {
+			return CTRL_FAIL;
 		}
-		b_first_step = false;
 	}
 	return CTRL_GOOD;
 }
@@ -224,32 +212,17 @@ Ctrl_status sd_mmc_usb_write_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 	default:
 		return CTRL_FAIL;
 	}
-	// Pipeline the 2 transfer in order to speed-up the performances
-	nb_step = nb_sector + 1;
+	nb_step = nb_sector; // W/O pipeline optimization
 	while (nb_step--) {
-		if (!b_first_step) { // Skip first step
-			// RAM -> MCI
-			if (SD_MMC_OK != sd_mmc_start_write_blocks(((nb_step % 2) == 0) ?
-					sector_buf_0 : sector_buf_1, 1)) {
-				return CTRL_FAIL;
-			}
+		if (!udi_msc_trans_block(false, sector_buf_0, SD_MMC_BLOCK_SIZE, NULL)) {
+			return CTRL_FAIL;
 		}
-		if (nb_step) { // Skip last step
-			// USB -> RAM
-			if (!udi_msc_trans_block(false,
-					((nb_step % 2) == 0) ?
-					sector_buf_1 : sector_buf_0,
-					SD_MMC_BLOCK_SIZE,
-					NULL)) {
-				return CTRL_FAIL;
-			}
+		ram_aes_ram(true, SD_MMC_BLOCK_SIZE/sizeof(unsigned int), sector_buf_0, aes_buf_0);
+		if (SD_MMC_OK != sd_mmc_start_write_blocks(aes_buf_0, 1)) {
+			return CTRL_FAIL;
 		}
-		if (!b_first_step) { // Skip first step
-			if (SD_MMC_OK != sd_mmc_wait_end_of_write_blocks()) {
-				return CTRL_FAIL;
-			}
-		} else {
-			b_first_step = false;
+		if (SD_MMC_OK != sd_mmc_wait_end_of_write_blocks()) {
+			return CTRL_FAIL;
 		}
 	}
 	return CTRL_GOOD;

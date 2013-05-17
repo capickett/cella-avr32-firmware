@@ -24,19 +24,30 @@
     <AsfFrameworkConfig>
       <framework-data>
   <options>
+    <option id="avr32.drivers.aes" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.dmaca" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="common.components.memory.data_flash.at45dbx.ctrl_access" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.components.memory.virtual_mem" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.basic.clock" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.basic.sleepmgr" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.usb.class.device" value="Add" config="mass_storage" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.cpu.cycle_counter" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.delay" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.mci.v2" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.components.memory.data_flash.at45dbx.ctrl_access" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.usb.class.msc.device.example" value="Add" config="" content-id="Atmel.ASF" />
   </options>
   <configurations>
     <configuration key="config.common.components.memory.sd_mmc" value="mci" default="mci" content-id="Atmel.ASF" />
     <configuration key="config.board.evk1104.led" value="yes" default="yes" content-id="Atmel.ASF" />
     <configuration key="config.common.services.usb.class.device" value="mass_storage" default="mass_storage" content-id="Atmel.ASF" />
+    <configuration key="config.avr32.utils.trampoline" value="yes" default="yes" content-id="Atmel.ASF" />
+    <configuration key="config.avr32.utils.gccstartup" value="yes" default="yes" content-id="Atmel.ASF" />
+    <configuration key="config.utils.interrupt.intc" value="yes" default="yes" content-id="Atmel.ASF" />
+    <configuration key="config.avr32.drivers.intc.exception" value="yes" default="yes" content-id="Atmel.ASF" />
+    <configuration key="config.avr32.drivers.usbb.device.sleepmgr" value="with_sleepmgr" default="with_sleepmgr" content-id="Atmel.ASF" />
   </configurations>
   <files>
     <file path="src/asf/avr32/boards/evk1104/evk1104.h" framework="" version="3.5.1" source="avr32/boards/evk1104/evk1104.h" changed="False" content-id="Atmel.ASF" />
@@ -140,6 +151,9 @@
     <file path="src/asf/common/utils/interrupt.h" framework="" version="3.5.1" source="common/utils/interrupt.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/asf/common/utils/interrupt/interrupt_avr32.h" framework="" version="3.5.1" source="common/utils/interrupt/interrupt_avr32.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/asf/common/utils/parts.h" framework="" version="3.5.1" source="common/utils/parts.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/avr32/drivers/aes/aes.c" framework="" version="3.5.1" source="avr32\drivers\aes\aes.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/avr32/drivers/aes/aes.h" framework="" version="3.5.1" source="avr32\drivers\aes\aes.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/avr32/drivers/dmaca/dmaca.h" framework="" version="3.5.1" source="avr32\drivers\dmaca\dmaca.h" changed="False" content-id="Atmel.ASF" />
   </files>
   <documentation help="" />
   <offline-documentation help="" />
@@ -185,7 +199,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
-      <Avr32Gcc xmlns="">
+      <Avr32Gcc>
   <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
   <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
   <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
@@ -234,6 +248,8 @@
       <Value>../src/asf/common/services/spi</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>../src/ASF/avr32/drivers/aes</Value>
+      <Value>../src/ASF/avr32/drivers/dmaca</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize for size (-Os)</avr32gcc.compiler.optimization.level>
@@ -287,6 +303,8 @@
       <Value>../src/asf/common/services/spi</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>../src/ASF/avr32/drivers/aes</Value>
+      <Value>../src/ASF/avr32/drivers/dmaca</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.general.AssemblerFlags>-DACCESS_USB_ENABLED -DAT45DBX_ENABLE -DBOARD=EVK1104 -DSD_MMC_ENABLE -DUDD_ENABLE -DVIRTUAL_MEMORY_ENABLE -mrelax</avr32gcc.preprocessingassembler.general.AssemblerFlags>
@@ -324,6 +342,8 @@
       <Value>../src/asf/common/services/spi</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>../src/ASF/avr32/drivers/aes</Value>
+      <Value>../src/ASF/avr32/drivers/dmaca</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
 </Avr32Gcc>
@@ -331,7 +351,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
-      <Avr32Gcc xmlns="">
+      <Avr32Gcc>
   <avr32gcc.common.outputfiles.hex>True</avr32gcc.common.outputfiles.hex>
   <avr32gcc.common.outputfiles.lss>True</avr32gcc.common.outputfiles.lss>
   <avr32gcc.common.outputfiles.eep>True</avr32gcc.common.outputfiles.eep>
@@ -380,6 +400,9 @@
       <Value>../src/asf/common/services/spi</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>../src/ASF/avr32/drivers/aes</Value>
+      <Value>../src/aes_dma</Value>
+      <Value>../src/ASF/avr32/drivers/dmaca</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize (-O1)</avr32gcc.compiler.optimization.level>
@@ -434,6 +457,8 @@
       <Value>../src/asf/common/services/spi</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>../src/ASF/avr32/drivers/aes</Value>
+      <Value>../src/ASF/avr32/drivers/dmaca</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.assembler.debugging.DebugLevel>Default (-g)</avr32gcc.assembler.debugging.DebugLevel>
@@ -472,6 +497,8 @@
       <Value>../src/asf/common/services/spi</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>../src/ASF/avr32/drivers/aes</Value>
+      <Value>../src/ASF/avr32/drivers/dmaca</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</avr32gcc.preprocessingassembler.debugging.DebugLevel>
@@ -485,8 +512,10 @@
     <Folder Include="src\asf\avr32\boards\" />
     <Folder Include="src\asf\avr32\boards\evk1104\" />
     <Folder Include="src\asf\avr32\drivers\" />
+    <Folder Include="src\asf\avr32\drivers\aes\" />
     <Folder Include="src\asf\avr32\drivers\cpu\" />
     <Folder Include="src\asf\avr32\drivers\cpu\cycle_counter\" />
+    <Folder Include="src\asf\avr32\drivers\dmaca\" />
     <Folder Include="src\asf\avr32\drivers\flashc\" />
     <Folder Include="src\asf\avr32\drivers\gpio\" />
     <Folder Include="src\asf\avr32\drivers\intc\" />
@@ -532,6 +561,7 @@
     <Folder Include="src\asf\common\utils\" />
     <Folder Include="src\asf\common\utils\interrupt\" />
     <Folder Include="src\config\" />
+    <Folder Include="src\aes_dma" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\asf\avr32\utils\linker_scripts\at32uc3a3\256\gcc\link_uc3a3256.lds">
@@ -897,12 +927,27 @@
     <None Include="src\asf.h">
       <SubType>compile</SubType>
     </None>
+    <Compile Include="src\aes_dma\aes_dma.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\aes_dma\aes_dma.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\asf\avr32\boards\evk1104\init.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\asf\avr32\boards\evk1104\led.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\asf\avr32\drivers\aes\aes.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\asf\avr32\drivers\aes\aes.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\avr32\drivers\dmaca\dmaca.h">
+      <SubType>compile</SubType>
+    </None>
     <Compile Include="src\asf\avr32\drivers\flashc\flashc.c">
       <SubType>compile</SubType>
     </Compile>

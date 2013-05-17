@@ -119,6 +119,16 @@ void memories_initialization(void)
 	AVR32_HMATRIX.scfg[AVR32_HMATRIX_SLAVE_EBI] =
 			u_avr32_hmatrix_scfg.scfg;
 # endif
+
+	// AES
+	
+	sysclk_enable_pbb_module(SYSCLK_AES);
+	u_avr32_hmatrix_scfg.scfg =
+			AVR32_HMATRIX.scfg[AVR32_HMATRIX_SLAVE_AES];
+	u_avr32_hmatrix_scfg.SCFG.defmstr_type =
+			AVR32_HMATRIX_DEFMSTR_TYPE_LAST_DEFAULT;
+	AVR32_HMATRIX.scfg[AVR32_HMATRIX_SLAVE_AES] =
+			u_avr32_hmatrix_scfg.scfg;
 #endif
 
 #ifdef AVR32_HMATRIX_MASTER_USBB_DMA
