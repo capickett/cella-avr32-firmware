@@ -62,6 +62,9 @@
 #include <compiler.h>
 #include <status_codes.h>
 
+// From module: DMACA - DMA Controller A
+#include <dmaca.h>
+
 // From module: Delay routines
 #include <delay.h>
 

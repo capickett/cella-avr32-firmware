@@ -48,6 +48,7 @@
 #include "conf_sd_mmc.h"
 #include "sd_mmc.h"
 #include "sd_mmc_mem.h"
+#include "aes_dma.h"
 
 /**
  * \ingroup sd_mmc_stack_mem
@@ -156,6 +157,10 @@ uint8_t sector_buf_0[SD_MMC_BLOCK_SIZE];
 COMPILER_WORD_ALIGNED
 uint8_t sector_buf_1[SD_MMC_BLOCK_SIZE];
 
+COMPILER_WORD_ALIGNED
+volatile uint8_t aes_buf_0[SD_MMC_BLOCK_SIZE];
+volatile uint8_t aes_buf_1[SD_MMC_BLOCK_SIZE];
+
 Ctrl_status sd_mmc_usb_read_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 {
 	bool b_first_step = true;
@@ -181,6 +186,9 @@ Ctrl_status sd_mmc_usb_read_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 		}
 		if (!b_first_step) { // Skip first step
 			// RAM -> USB
+			ram_aes_ram(SD_MMC_BLOCK_SIZE/sizeof(unsigned int), ((nb_step % 2) == 0) ?
+					sector_buf_1 : sector_buf_0, ((nb_step % 2) == 0) ?
+					aes_buf_1 : aes_buf_0);
 			if (!udi_msc_trans_block(true,
 					((nb_step % 2) == 0) ?
 					sector_buf_1 : sector_buf_0,
