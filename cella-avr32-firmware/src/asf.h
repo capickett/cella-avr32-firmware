@@ -55,6 +55,9 @@
 // From module: CPU Cycle Counter
 #include <cycle_counter.h>
 
+// From module: AES - Advanced Encryption Standard
+#include <aes.h>
+
 // From module: Compiler abstraction layer and code utilities
 #include <compiler.h>
 #include <status_codes.h>
