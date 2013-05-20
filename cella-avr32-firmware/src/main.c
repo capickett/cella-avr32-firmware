@@ -40,9 +40,9 @@
  * \asf_license_stop
  *
  */
-
 #include <asf.h>
 #include "conf_usb.h"
+#include "data_mount.h"
 #include "ui.h"
 
 static bool main_b_msc_enable = false;

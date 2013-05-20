@@ -63,6 +63,7 @@
 #include "semphr.h"
 #endif
 #include "ctrl_access.h"
+#include "data_mount.h"
 
 
 //_____ D E F I N I T I O N S ______________________________________________
@@ -289,6 +290,9 @@ Ctrl_status mem_test_unit_ready(U8 lun)
 
   if (!Ctrl_access_lock()) return CTRL_FAIL;
 
+if ((lun == SD_LUN_INDEX) && data_mounted == false)
+	return CTRL_NO_PRESENT;
+	
   status =
 #if MAX_LUN
          (lun < MAX_LUN) ? lun_desc[lun].test_unit_ready() :

@@ -52,11 +52,11 @@
  * running the ASF driver selector tool. Any changes will be discarded.
  */
 
-// From module: CPU Cycle Counter
-#include <cycle_counter.h>
-
 // From module: AES - Advanced Encryption Standard
 #include <aes.h>
+
+// From module: CPU Cycle Counter
+#include <cycle_counter.h>
 
 // From module: Compiler abstraction layer and code utilities
 #include <compiler.h>
@@ -67,9 +67,6 @@
 
 // From module: Delay routines
 #include <delay.h>
-
-// From module: EVK1104
-#include <led.h>
 
 // From module: FLASHC - Flash Controller
 #include <flashc.h>
@@ -89,6 +86,8 @@
 // From module: MCI - MultiMedia Card Interface
 #include <mci.h>
 
+#include <sd_mmc.h>
+
 // From module: Memory Control Access Interface
 #include <ctrl_access.h>
 
@@ -98,12 +97,6 @@
 
 // From module: Part identification macros
 #include <parts.h>
-
-// From module: SD/MMC stack + Memory Control Access (aka ctrl_access, required for file system or USB)
-#include <sd_mmc_mem.h>
-
-// From module: SD/MMC stack on Multimedia Card interface
-#include <sd_mmc.h>
 
 // From module: SPI - Serial Peripheral Interface
 #include <spi.h>
