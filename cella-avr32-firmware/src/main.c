@@ -73,6 +73,8 @@ int main(void)
 		main_vbus_action(true);
 	}
 
+	
+
 	// The main loop manages only the power mode
 	// because the USB management is done by interrupt
 	while (true) {
