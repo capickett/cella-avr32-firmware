@@ -112,6 +112,9 @@
 // From module: System Clock Control - UC3 A3/A4 implementation
 #include <sysclk.h>
 
+// From module: USART - Universal Synchronous/Asynchronous Receiver/Transmitter
+#include <usart.h>
+
 // From module: USB Device MSC (Single Interface Device)
 #include <udi_msc.h>
 
