@@ -64,6 +64,32 @@ int main(void)
 
 	memories_initialization();
 
+
+	/* USART SETUP todo: extract into function */
+
+	static const gpio_map_t USART_GPIO_MAP = {
+		{ USART_RX_PIN, USART_RX_FUNCTION },
+		{ USART_TX_PIN, USART_TX_FUNCTION }
+	};
+	
+	gpio_enable_module(USART_GPIO_MAP, sizeof(USART_GPIO_MAP)/ sizeof(USART_GPIO_MAP[0]));
+
+	static usart_serial_options_t usart_options = {
+		.baudrate = USART_SERIAL_BAUDRATE,
+		.charlength = USART_SERIAL_CHAR_LENGTH,
+		.paritytype = USART_SERIAL_PARITY,
+		.stopbits = USART_SERIAL_STOP_BIT,
+		.channelmode = CONFIG_USART_SERIAL_MODE
+	};
+
+	usart_serial_init(USART_SERIAL, &usart_options);
+
+	/* END USART SETUP */
+
+	usart_putchar(USART_SERIAL, '$');
+	usart_putchar(USART_SERIAL, '$');
+	usart_putchar(USART_SERIAL, '$');
+
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
 
