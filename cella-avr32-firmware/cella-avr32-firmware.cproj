@@ -36,9 +36,10 @@
     <option id="common.services.basic.clock" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.delay" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.basic.serial" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.basic.sleepmgr" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.usb.class.device" value="Add" config="mass_storage" content-id="Atmel.ASF" />
-    <option id="common.services.basic.serial" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.services.crypto.polarssl" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.components.memory.data_flash.at45dbx.ctrl_access" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.usb.class.msc.device.example" value="Add" config="" content-id="Atmel.ASF" />
   </options>
@@ -163,6 +164,57 @@
     <file path="src/ASF/common/services/serial/uc3_usart/usart_serial.h" framework="" version="3.5.1" source="common\services\serial\uc3_usart\usart_serial.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/common/services/serial/serial.h" framework="" version="3.5.1" source="common\services\serial\serial.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/Config/conf_usart_serial.h" framework="" version="3.5.1" source="common\services\serial\uc3_usart\module_config\conf_usart_serial.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/dhm.c" framework="" version="3.5.1" source="thirdparty\polarssl\dhm.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/arc4.c" framework="" version="3.5.1" source="thirdparty\polarssl\arc4.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/des.c" framework="" version="3.5.1" source="thirdparty\polarssl\des.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/camellia.c" framework="" version="3.5.1" source="thirdparty\polarssl\camellia.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/md2.c" framework="" version="3.5.1" source="thirdparty\polarssl\md2.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/padlock.c" framework="" version="3.5.1" source="thirdparty\polarssl\padlock.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/sha1.c" framework="" version="3.5.1" source="thirdparty\polarssl\sha1.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/x509parse.c" framework="" version="3.5.1" source="thirdparty\polarssl\x509parse.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/sha2.c" framework="" version="3.5.1" source="thirdparty\polarssl\sha2.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/sha4.c" framework="" version="3.5.1" source="thirdparty\polarssl\sha4.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/base64.c" framework="" version="3.5.1" source="thirdparty\polarssl\base64.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/aes.c" framework="" version="3.5.1" source="thirdparty\polarssl\aes.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/debug.c" framework="" version="3.5.1" source="thirdparty\polarssl\debug.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/md5.c" framework="" version="3.5.1" source="thirdparty\polarssl\md5.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/xtea.c" framework="" version="3.5.1" source="thirdparty\polarssl\xtea.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/timing.c" framework="" version="3.5.1" source="thirdparty\polarssl\timing.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/havege.c" framework="" version="3.5.1" source="thirdparty\polarssl\havege.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/ssl_srv.c" framework="" version="3.5.1" source="thirdparty\polarssl\ssl_srv.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/rsa.c" framework="" version="3.5.1" source="thirdparty\polarssl\rsa.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/ssl_cli.c" framework="" version="3.5.1" source="thirdparty\polarssl\ssl_cli.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/md4.c" framework="" version="3.5.1" source="thirdparty\polarssl\md4.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/bignum.c" framework="" version="3.5.1" source="thirdparty\polarssl\bignum.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/certs.c" framework="" version="3.5.1" source="thirdparty\polarssl\certs.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/ChangeLog.txt" framework="" version="3.5.1" source="thirdparty\polarssl\ChangeLog.txt" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/debug.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\debug.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/certs.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\certs.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/dhm.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\dhm.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/base64.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\base64.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/sha1.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\sha1.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/sha2.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\sha2.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/ssl.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\ssl.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/sha4.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\sha4.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/havege.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\havege.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/rsa.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\rsa.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/md2.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\md2.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/md4.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\md4.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/camellia.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\camellia.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/md5.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\md5.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/bignum.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\bignum.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/timing.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\timing.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/xtea.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\xtea.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/docsrc/documentation.h" framework="" version="3.5.1" source="thirdparty\polarssl\docsrc\documentation.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/config.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\config.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/x509.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\x509.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/bn_mul.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\bn_mul.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/arc4.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\arc4.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/padlock.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\padlock.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/openssl.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\openssl.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/aes.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\aes.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/net.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\net.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/thirdparty/polarssl/include/polarssl/des.h" framework="" version="3.5.1" source="thirdparty\polarssl\include\polarssl\des.h" changed="False" content-id="Atmel.ASF" />
   </files>
   <documentation help="" />
   <offline-documentation help="" />
@@ -262,6 +314,8 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/common/services/serial/uc3_usart</Value>
       <Value>../src/ASF/common/services/serial</Value>
+      <Value>../src/ASF/thirdparty/polarssl</Value>
+      <Value>../src/ASF/thirdparty/polarssl/include</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize for size (-Os)</avr32gcc.compiler.optimization.level>
@@ -320,6 +374,8 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/common/services/serial/uc3_usart</Value>
       <Value>../src/ASF/common/services/serial</Value>
+      <Value>../src/ASF/thirdparty/polarssl</Value>
+      <Value>../src/ASF/thirdparty/polarssl/include</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.general.AssemblerFlags>-DACCESS_USB_ENABLED -DAT45DBX_ENABLE -DBOARD=EVK1104 -DSD_MMC_ENABLE -DUDD_ENABLE -DVIRTUAL_MEMORY_ENABLE -mrelax</avr32gcc.preprocessingassembler.general.AssemblerFlags>
@@ -362,6 +418,8 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/common/services/serial/uc3_usart</Value>
       <Value>../src/ASF/common/services/serial</Value>
+      <Value>../src/ASF/thirdparty/polarssl</Value>
+      <Value>../src/ASF/thirdparty/polarssl/include</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
 </Avr32Gcc>
@@ -425,6 +483,9 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/common/services/serial/uc3_usart</Value>
       <Value>../src/ASF/common/services/serial</Value>
+      <Value>../src/ASF/thirdparty/polarssl</Value>
+      <Value>../src/ASF/thirdparty/polarssl/include</Value>
+      <Value>../src/security</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize (-O1)</avr32gcc.compiler.optimization.level>
@@ -484,6 +545,8 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/common/services/serial/uc3_usart</Value>
       <Value>../src/ASF/common/services/serial</Value>
+      <Value>../src/ASF/thirdparty/polarssl</Value>
+      <Value>../src/ASF/thirdparty/polarssl/include</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.assembler.debugging.DebugLevel>Default (-g)</avr32gcc.assembler.debugging.DebugLevel>
@@ -527,6 +590,8 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/common/services/serial/uc3_usart</Value>
       <Value>../src/ASF/common/services/serial</Value>
+      <Value>../src/ASF/thirdparty/polarssl</Value>
+      <Value>../src/ASF/thirdparty/polarssl/include</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</avr32gcc.preprocessingassembler.debugging.DebugLevel>
@@ -591,9 +656,15 @@
     <Folder Include="src\asf\common\services\usb\udc\" />
     <Folder Include="src\asf\common\utils\" />
     <Folder Include="src\asf\common\utils\interrupt\" />
+    <Folder Include="src\asf\thirdparty\" />
+    <Folder Include="src\asf\thirdparty\polarssl\" />
+    <Folder Include="src\asf\thirdparty\polarssl\docsrc\" />
+    <Folder Include="src\asf\thirdparty\polarssl\include\" />
+    <Folder Include="src\asf\thirdparty\polarssl\include\polarssl\" />
     <Folder Include="src\config\" />
     <Folder Include="src\aes_dma" />
     <Folder Include="src\data_mount" />
+    <Folder Include="src\security" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\asf\avr32\utils\linker_scripts\at32uc3a3\256\gcc\link_uc3a3256.lds">
@@ -606,6 +677,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\asf\thirdparty\polarssl\ChangeLog.txt">
+      <SubType>compile</SubType>
+    </None>
     <None Include="src\config\conf_spi_master.h">
       <SubType>compile</SubType>
     </None>
@@ -957,6 +1031,162 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\asf\avr32\drivers\usart\usart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\aes.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\arc4.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\base64.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\bignum.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\camellia.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\certs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\debug.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\des.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\dhm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\asf\thirdparty\polarssl\docsrc\documentation.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\asf\thirdparty\polarssl\havege.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\debug.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\certs.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\dhm.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\base64.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\sha1.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\sha2.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\ssl.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\sha4.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\havege.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\rsa.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\md2.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\md4.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\camellia.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\md5.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\bignum.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\timing.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\xtea.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\config.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\x509.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\bn_mul.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\arc4.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\padlock.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\openssl.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\aes.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\net.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\thirdparty\polarssl\include\polarssl\des.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\asf\thirdparty\polarssl\md2.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\md4.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\md5.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\padlock.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\rsa.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\sha1.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\sha2.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\sha4.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\ssl_cli.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\ssl_srv.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\timing.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\x509parse.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\asf\thirdparty\polarssl\xtea.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\security\security.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\security\security.h">
       <SubType>compile</SubType>
     </Compile>
     <None Include="src\asf\avr32\drivers\usart\usart.h">

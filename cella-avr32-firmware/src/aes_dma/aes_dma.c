@@ -7,26 +7,13 @@
 
 #include "aes_dma.h"
 
-// CipherKey array
-// the_key = 256'h603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4;
-static const unsigned int      CipherKey[8] = {
-	0x603deb10,
-	0x15ca71be,
-	0x2b73aef0,
-	0x857d7781,
-	0x1f352c07,
-	0x3b6108d7,
-	0x2d9810a3,
-	0x0914dff4
-};
-
 // InitVector array
 // Initial Value 128'h000102030405060708090a0b0c0d0e0f
-static const unsigned int      InitVector[4] = {
-	0x00010203,
-	0x04050607,
-	0x08090a0b,
-	0x0c0d0e0f
+static const unsigned int init_vector[4] = {
+	0x7c7a02ae,
+	0x376a6097,
+	0xa7371576,
+	0x59100a67	
 };
 
 void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *pSrcBuf, unsigned int *pDstBuf)
@@ -175,10 +162,10 @@ void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *p
 	//* Set the AES cryptographic key and init vector.
 	//*
 	// Set the cryptographic key.
-	aes_set_key(&AVR32_AES, CipherKey);
+	aes_set_key(&AVR32_AES, hash_key_cipher);
 
 	// Set the initialization vector.
-	aes_set_initvector(&AVR32_AES, InitVector);
+	aes_set_initvector(&AVR32_AES, init_vector);
 
 	// Enable Channel 0 & 1 : start the process.
 	AVR32_DMACA.chenreg = ((3<<AVR32_DMACA_CHENREG_CH_EN_OFFSET) | (3<<AVR32_DMACA_CHENREG_CH_EN_WE_OFFSET));

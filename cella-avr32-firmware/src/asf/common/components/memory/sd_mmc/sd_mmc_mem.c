@@ -162,7 +162,7 @@ uint8_t aes_buf_0[SD_MMC_BLOCK_SIZE];
 
 Ctrl_status sd_mmc_usb_read_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 {
-	bool b_first_step = true;
+	//bool b_first_step = true;
 	uint16_t nb_step;
 
 	switch (sd_mmc_init_read_blocks(slot, addr, nb_sector)) {
@@ -201,7 +201,7 @@ Ctrl_status sd_mmc_usb_read_10_1(uint32_t addr, uint16_t nb_sector)
 
 Ctrl_status sd_mmc_usb_write_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 {
-	bool b_first_step = true;
+	//bool b_first_step = true;
 	uint16_t nb_step;
 
 	switch (sd_mmc_init_write_blocks(slot, addr, nb_sector)) {

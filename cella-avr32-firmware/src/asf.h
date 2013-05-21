@@ -86,8 +86,6 @@
 // From module: MCI - MultiMedia Card Interface
 #include <mci.h>
 
-#include <sd_mmc.h>
-
 // From module: Memory Control Access Interface
 #include <ctrl_access.h>
 
@@ -97,6 +95,32 @@
 
 // From module: Part identification macros
 #include <parts.h>
+
+// From module: PolarSSL - Small Cryptographic and SSL/TLS Library
+#include <polarssl/aes.h>
+#include <polarssl/arc4.h>
+#include <polarssl/base64.h>
+#include <polarssl/bignum.h>
+#include <polarssl/bn_mul.h>
+#include <polarssl/camellia.h>
+#include <polarssl/certs.h>
+#include <polarssl/config.h>
+#include <polarssl/debug.h>
+#include <polarssl/des.h>
+#include <polarssl/dhm.h>
+#include <polarssl/havege.h>
+#include <polarssl/md2.h>
+#include <polarssl/md4.h>
+#include <polarssl/md5.h>
+#include <polarssl/padlock.h>
+#include <polarssl/rsa.h>
+#include <polarssl/sha1.h>
+#include <polarssl/sha2.h>
+#include <polarssl/sha4.h>
+#include <polarssl/ssl.h>
+#include <polarssl/timing.h>
+#include <polarssl/x509.h>
+#include <polarssl/xtea.h>
 
 // From module: SPI - Serial Peripheral Interface
 #include <spi.h>
@@ -108,6 +132,8 @@
 // From module: Sleep manager - UC3 implementation
 #include <sleepmgr.h>
 #include <uc3/sleepmgr.h>
+
+#include <sd_mmc.h>
 
 // From module: System Clock Control - UC3 A3/A4 implementation
 #include <sysclk.h>

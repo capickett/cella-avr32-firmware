@@ -45,6 +45,7 @@
 #include <asf.h>
 #include "conf_access.h"
 #include "main.h"
+#include "security.h"
 
 #if (defined AT45DBX_MEM) && (AT45DBX_MEM == ENABLE)
 # include "conf_at45dbx.h"
@@ -164,5 +165,7 @@ void memories_initialization(void)
 	|| ((defined SD_MMC_1_MEM) && (SD_MMC_1_MEM == ENABLE))
 	sd_mmc_init();
 #endif
+
+	flash_init();
 }
 

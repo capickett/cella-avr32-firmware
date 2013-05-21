@@ -12,6 +12,9 @@
 #include "stdbool.h"
 #include "dmaca.h"
 #include "aes.h"
+#include "security.h"
+
+extern uint8_t hash_key_cipher[HASH_LENGTH];
 
 void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *pSrcBuf, unsigned int *pDstBuf);
 

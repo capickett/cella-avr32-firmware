@@ -44,8 +44,13 @@
 #include "conf_usb.h"
 #include "data_mount.h"
 #include "ui.h"
+#include "security.h"
 
 static bool main_b_msc_enable = false;
+static const uint32_t password[2] = {
+	0x31323334,
+	0x35363738
+};
 
 /*! \brief Main function. Execution starts here.
  */
@@ -63,8 +68,7 @@ int main(void)
 	ui_powerdown();
 
 	memories_initialization();
-
-
+	
 	/* USART SETUP todo: extract into function */
 
 	static const gpio_map_t USART_GPIO_MAP = {
@@ -98,8 +102,6 @@ int main(void)
 		// thereby VBUS has to be considered as present
 		main_vbus_action(true);
 	}
-
-	
 
 	// The main loop manages only the power mode
 	// because the USB management is done by interrupt
