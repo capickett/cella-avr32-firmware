@@ -70,13 +70,13 @@ int main(void)
 
 	memories_initialization();
 	
-	//write_pass(password, 8);
-	//if (validate_pass(password, 8))
-	//{
-		//LED_On(LED0);
-	//} else {
-		//LED_Off(LED0);
-	//}
+	write_pass(password, 8);
+	if (validate_pass(password, 8))
+	{
+		LED_On(LED0);
+	} else {
+		LED_Off(LED0);
+	}
 	
 	/* USART SETUP todo: extract into function */
 	usart_comm_init();

@@ -11,7 +11,6 @@
 #include "flashc.h"
 
 static uint8_t hash_buf[HASH_LENGTH];
-static uint8_t salt_buf[SALT_LENGTH];
 
 // TODO: Generate random salt
 static const uint32_t default_salt[SALT_LENGTH/4] = {
@@ -53,14 +52,14 @@ void flash_init()
 // TODO: Remove len argument
 bool validate_pass(uint8_t *password, uint8_t len)
 {
-	hash_pass(password, (uint8_t *)user_data->salt, len, hash_buf);
-	return !strncmp(hash_buf, (uint8_t *)user_data->hash, HASH_LENGTH);
+	hash_pass(password, (uint8_t*) user_data->salt, len, hash_buf);
+	return !strncmp((const char*) hash_buf, (const char*)user_data->hash, HASH_LENGTH);
 }
 
 //TODO: Remove len argument
 void write_pass(uint8_t *password, uint8_t len)
 {
-	hash_pass(password, default_salt, len, hash_buf);
+	hash_pass(password, (uint8_t*) default_salt, len, hash_buf);
 	flash_write_user_hash(hash_buf);
-	flash_write_user_salt(default_salt);
+	flash_write_user_salt((uint8_t*) default_salt);
 }

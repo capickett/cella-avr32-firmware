@@ -38,16 +38,16 @@ static usart_serial_options_t usart_options = {
 	//}
 //}
 
-static void read_config(encrypt_config *config) {
-	char config_string[sizeof(*config)];
-	int i;
-	int max = sizeof(*config);
-	for (i = 0; i < max; ++i) {
-		config_string[i] = getchar();
-	}
-	config->encryption_level = (uint8_t) config_string[0];
-	/* other config options get parsed here */
-}
+//static void read_config(encrypt_config *config) {
+	//char config_string[sizeof(*config)];
+	//int i;
+	//int max = sizeof(*config);
+	//for (i = 0; i < max; ++i) {
+		//config_string[i] = getchar();
+	//}
+	//config->encryption_level = (uint8_t) config_string[0];
+	///* other config options get parsed here */
+//}
 
 /* USART Setup */
 void usart_comm_init()

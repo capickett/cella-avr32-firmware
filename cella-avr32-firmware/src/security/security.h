@@ -33,14 +33,16 @@ __attribute__((__section__(".userpage")))
 #elif defined(__ICCAVR32__)
 __no_init
 #endif
-user_data_t user_data_st
+static user_data_t user_data_st
 #if defined (__ICCAVR32__)
 @ "USERDATA32_C"
 #endif
 ;
 
-//#define USER_PAGE_ADDRESS 0x80800000
 #define user_data (&user_data_st)
+
+// TODO: Load in cipher key from BT interrupt handler
+uint8_t hash_key_cipher[HASH_LENGTH];
 
 /* Function declarations */
 

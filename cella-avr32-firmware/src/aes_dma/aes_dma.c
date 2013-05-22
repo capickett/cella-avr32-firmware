@@ -161,7 +161,7 @@ void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *p
 	//* Set the AES cryptographic key and init vector.
 	//*
 	// Set the cryptographic key.
-	aes_set_key(&AVR32_AES, hash_key_cipher);
+	aes_set_key(&AVR32_AES, (const unsigned int*) hash_key_cipher);
 
 	// Set the initialization vector.
 	aes_set_initvector(&AVR32_AES, init_vector);
