@@ -45,8 +45,8 @@ static void hash_pass(uint8_t *password, uint8_t *salt, uint8_t len, uint8_t *ou
 
 void flash_init()
 {
-	if (!flashc_is_security_bit_active())
-		flashc_activate_security_bit();
+	//if (!flashc_is_security_bit_active())
+		//flashc_activate_security_bit();
 }
 
 // TODO: Remove len argument

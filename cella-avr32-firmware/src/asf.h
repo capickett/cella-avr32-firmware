@@ -68,6 +68,9 @@
 // From module: Delay routines
 #include <delay.h>
 
+// From module: EIC - External Interrupt Controller
+#include <eic.h>
+
 // From module: FLASHC - Flash Controller
 #include <flashc.h>
 
@@ -85,6 +88,8 @@
 
 // From module: MCI - MultiMedia Card Interface
 #include <mci.h>
+
+#include <sd_mmc.h>
 
 // From module: Memory Control Access Interface
 #include <ctrl_access.h>
@@ -132,8 +137,6 @@
 // From module: Sleep manager - UC3 implementation
 #include <sleepmgr.h>
 #include <uc3/sleepmgr.h>
-
-#include <sd_mmc.h>
 
 // From module: System Clock Control - UC3 A3/A4 implementation
 #include <sysclk.h>
