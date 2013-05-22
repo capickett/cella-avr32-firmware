@@ -45,6 +45,7 @@
 #include "data_mount.h"
 #include "ui.h"
 #include "security.h"
+#include "usart_comm.h"
 
 static bool main_b_msc_enable = false;
 static const uint32_t password[2] = {
@@ -69,31 +70,17 @@ int main(void)
 
 	memories_initialization();
 	
-	/* USART SETUP todo: extract into function */
-
-	static const gpio_map_t USART_GPIO_MAP = {
-		{ USART_RX_PIN, USART_RX_FUNCTION },
-		{ USART_TX_PIN, USART_TX_FUNCTION }
-	};
+	//write_pass(password, 8);
+	//if (validate_pass(password, 8))
+	//{
+		//LED_On(LED0);
+	//} else {
+		//LED_Off(LED0);
+	//}
 	
-	gpio_enable_module(USART_GPIO_MAP, sizeof(USART_GPIO_MAP)/ sizeof(USART_GPIO_MAP[0]));
-
-	static usart_serial_options_t usart_options = {
-		.baudrate = USART_SERIAL_BAUDRATE,
-		.charlength = USART_SERIAL_CHAR_LENGTH,
-		.paritytype = USART_SERIAL_PARITY,
-		.stopbits = USART_SERIAL_STOP_BIT,
-		.channelmode = CONFIG_USART_SERIAL_MODE
-	};
-
-	usart_serial_init(USART_SERIAL, &usart_options);
-
-	/* END USART SETUP */
-
-	usart_putchar(USART_SERIAL, '$');
-	usart_putchar(USART_SERIAL, '$');
-	usart_putchar(USART_SERIAL, '$');
-
+	/* USART SETUP todo: extract into function */
+	usart_comm_init();
+	
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
 

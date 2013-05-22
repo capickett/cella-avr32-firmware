@@ -486,6 +486,7 @@
       <Value>../src/ASF/thirdparty/polarssl</Value>
       <Value>../src/ASF/thirdparty/polarssl/include</Value>
       <Value>../src/security</Value>
+      <Value>../src/usart_comm</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize (-O1)</avr32gcc.compiler.optimization.level>
@@ -664,6 +665,7 @@
     <Folder Include="src\config\" />
     <Folder Include="src\aes_dma" />
     <Folder Include="src\data_mount" />
+    <Folder Include="src\usart_comm" />
     <Folder Include="src\security" />
   </ItemGroup>
   <ItemGroup>
@@ -1058,6 +1060,15 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\asf\thirdparty\polarssl\dhm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\config\conf_usart_comm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\usart_comm\usart_comm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\usart_comm\usart_comm.h">
       <SubType>compile</SubType>
     </Compile>
     <None Include="src\asf\thirdparty\polarssl\docsrc\documentation.h">

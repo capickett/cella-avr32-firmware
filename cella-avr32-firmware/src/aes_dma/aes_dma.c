@@ -8,7 +8,6 @@
 #include "aes_dma.h"
 
 // InitVector array
-// Initial Value 128'h000102030405060708090a0b0c0d0e0f
 static const unsigned int init_vector[4] = {
 	0x7c7a02ae,
 	0x376a6097,
