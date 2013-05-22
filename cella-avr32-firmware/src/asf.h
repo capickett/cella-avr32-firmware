@@ -68,9 +68,6 @@
 // From module: Delay routines
 #include <delay.h>
 
-// From module: EIC - External Interrupt Controller
-#include <eic.h>
-
 // From module: FLASHC - Flash Controller
 #include <flashc.h>
 
@@ -80,6 +77,9 @@
 // From module: Generic board support
 #include <board.h>
 
+// From module: INTC - Interrupt Controller
+#include <intc.h>
+
 // From module: IOPORT - General purpose I/O service
 #include <ioport.h>
 
@@ -88,8 +88,6 @@
 
 // From module: MCI - MultiMedia Card Interface
 #include <mci.h>
-
-#include <sd_mmc.h>
 
 // From module: Memory Control Access Interface
 #include <ctrl_access.h>

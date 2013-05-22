@@ -12,7 +12,8 @@
 #include "stdbool.h"
 #include "dmaca.h"
 #include "aes.h"
-#include "security.h"
+
+void aes_init(void);
 
 void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *pSrcBuf, unsigned int *pDstBuf);
 

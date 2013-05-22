@@ -49,6 +49,7 @@
 #include "sd_mmc.h"
 #include "sd_mmc_mem.h"
 #include "aes_dma.h"
+#include "security.h"
 
 /**
  * \ingroup sd_mmc_stack_mem
@@ -181,8 +182,9 @@ Ctrl_status sd_mmc_usb_read_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 		if (SD_MMC_OK != sd_mmc_wait_end_of_read_blocks()) {
 			return CTRL_FAIL;
 		}
-		ram_aes_ram(false, SD_MMC_BLOCK_SIZE/sizeof(unsigned int), (unsigned int *)sector_buf_0, (unsigned int *)aes_buf_0);
-		if (!udi_msc_trans_block(true, aes_buf_0, SD_MMC_BLOCK_SIZE, NULL)) {
+		if (!user_data->config.encryption_level)
+			ram_aes_ram(false, SD_MMC_BLOCK_SIZE/sizeof(unsigned int), (unsigned int *)sector_buf_0, (unsigned int *)aes_buf_0);
+		if (!udi_msc_trans_block(true, !user_data->config.encryption_level ? aes_buf_0 : sector_buf_0, SD_MMC_BLOCK_SIZE, NULL)) {
 			return CTRL_FAIL;
 		}
 	}
@@ -217,8 +219,9 @@ Ctrl_status sd_mmc_usb_write_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 		if (!udi_msc_trans_block(false, sector_buf_0, SD_MMC_BLOCK_SIZE, NULL)) {
 			return CTRL_FAIL;
 		}
-		ram_aes_ram(true, SD_MMC_BLOCK_SIZE/sizeof(unsigned int), (unsigned int *)sector_buf_0, (unsigned int *)aes_buf_0);
-		if (SD_MMC_OK != sd_mmc_start_write_blocks(aes_buf_0, 1)) {
+		if (!user_data->config.encryption_level)
+			ram_aes_ram(true, SD_MMC_BLOCK_SIZE/sizeof(unsigned int), (unsigned int *)sector_buf_0, (unsigned int *)aes_buf_0);
+		if (SD_MMC_OK != sd_mmc_start_write_blocks(!user_data->config.encryption_level ? aes_buf_0 : sector_buf_0, 1)) {
 			return CTRL_FAIL;
 		}
 		if (SD_MMC_OK != sd_mmc_wait_end_of_write_blocks()) {

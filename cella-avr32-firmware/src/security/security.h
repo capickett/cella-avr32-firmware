@@ -23,7 +23,7 @@
 
 typedef struct user_data_struct
 {
-	encrypt_config config;
+	encrypt_config_t config;
 	uint8_t hash[HASH_LENGTH];
 	uint8_t salt[SALT_LENGTH];
 } user_data_t;
@@ -41,15 +41,12 @@ static user_data_t user_data_st
 
 #define user_data (&user_data_st)
 
-// TODO: Load in cipher key from BT interrupt handler
-uint8_t hash_key_cipher[HASH_LENGTH];
-
 /* Function declarations */
 
 void flash_init(void);
 
-bool validate_pass(uint8_t *password, uint8_t len);
+bool validate_pass(uint8_t *password);
 
-void write_pass(uint8_t *password, uint8_t len);
+void write_pass(uint8_t *password);
 
 #endif /* SECURITY_H_ */

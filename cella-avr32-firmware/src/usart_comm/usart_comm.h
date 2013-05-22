@@ -8,9 +8,9 @@
 #ifndef USART_COMM_H_
 #define USART_COMM_H_
 
-typedef struct config_st {
+typedef struct encrypt_config_st {
 	uint8_t encryption_level;
-} encrypt_config;
+} encrypt_config_t;
 
 void usart_comm_init(void);
 

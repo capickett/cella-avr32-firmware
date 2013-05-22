@@ -7,7 +7,7 @@
 
 #include "data_mount.h"
 
-bool data_mounted = true;
+bool data_mounted = false;
 
 void mount_data()
 {

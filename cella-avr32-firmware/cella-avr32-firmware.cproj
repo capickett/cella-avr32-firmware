@@ -27,6 +27,7 @@
     <option id="avr32.drivers.aes" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.cpu.cycle_counter" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.dmaca" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.intc" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.flashc" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.mci.v2" value="Add" config="" content-id="Atmel.ASF" />
@@ -1060,9 +1061,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\asf\thirdparty\polarssl\dhm.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\config\conf_usart_comm.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\usart_comm\usart_comm.c">

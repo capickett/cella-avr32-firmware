@@ -7,6 +7,8 @@
 
 #include "aes_dma.h"
 
+aes_config_t AesConf;
+
 // InitVector array
 static const unsigned int init_vector[4] = {
 	0x7c7a02ae,
@@ -15,13 +17,24 @@ static const unsigned int init_vector[4] = {
 	0x59100a67	
 };
 
-void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *pSrcBuf, unsigned int *pDstBuf)
+// CipherKey array
+// the_key = 256'h603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4;
+const unsigned int      hash_key_cipher[8] = {
+	0x603deb10,
+	0x15ca71be,
+	0x2b73aef0,
+	0x857d7781,
+	0x1f352c07,
+	0x3b6108d7,
+	0x2d9810a3,
+	0x0914dff4
+};
+
+void aes_init()
 {
-	aes_config_t      AesConf;
 	//====================
 	// Configure the AES.
 	//====================
-	AesConf.ProcessingMode = encrypt ? AES_PMODE_CIPHER : AES_PMODE_DECIPHER;  // Cipher
 	AesConf.ProcessingDelay = 0;                // No delay: best performance
 	AesConf.StartMode = AES_START_MODE_DMA;     // DMA mode
 	AesConf.KeySize = AES_KEY_SIZE_256;         // 256bit cryptographic key
@@ -31,6 +44,30 @@ void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *p
 	// is available in the OutputData[] buffer.
 	AesConf.CFBSize = 0;                        // Don't-care because we're using the CBC mode.
 	AesConf.CounterMeasureMask = 0;             // Disable all counter measures.
+	aes_configure(&AVR32_AES, &AesConf);
+	
+	aes_set_key(&AVR32_AES, (const unsigned int*) hash_key_cipher);
+}
+
+void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *pSrcBuf, unsigned int *pDstBuf)
+{
+	//aes_config_t      AesConf;
+	////====================
+	//// Configure the AES.
+	////====================
+	//AesConf.ProcessingMode = encrypt ? AES_PMODE_CIPHER : AES_PMODE_DECIPHER;  // Cipher
+	//AesConf.ProcessingDelay = 0;                // No delay: best performance
+	//AesConf.StartMode = AES_START_MODE_DMA;     // DMA mode
+	//AesConf.KeySize = AES_KEY_SIZE_256;         // 256bit cryptographic key
+	//AesConf.OpMode = AES_CBC_MODE;              // CBC cipher mode
+	//AesConf.LodMode = 0;                        // LODMODE == 0 : the end of the
+	//// encryption is notified by the DMACA transfer complete interrupt. The output
+	//// is available in the OutputData[] buffer.
+	//AesConf.CFBSize = 0;                        // Don't-care because we're using the CBC mode.
+	//AesConf.CounterMeasureMask = 0;             // Disable all counter measures.
+	//aes_configure(&AVR32_AES, &AesConf);
+
+	AesConf.ProcessingMode = encrypt ? AES_PMODE_CIPHER : AES_PMODE_DECIPHER;  // Cipher
 	aes_configure(&AVR32_AES, &AesConf);
 
 	//====================
@@ -161,7 +198,7 @@ void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *p
 	//* Set the AES cryptographic key and init vector.
 	//*
 	// Set the cryptographic key.
-	aes_set_key(&AVR32_AES, (const unsigned int*) hash_key_cipher);
+	//aes_set_key(&AVR32_AES, (const unsigned int*) hash_key_cipher);
 
 	// Set the initialization vector.
 	aes_set_initvector(&AVR32_AES, init_vector);

@@ -46,6 +46,7 @@
 #include "ui.h"
 #include "security.h"
 #include "usart_comm.h"
+#include "aes_dma.h"
 
 static bool main_b_msc_enable = false;
 static const uint32_t password[2] = {
@@ -65,20 +66,20 @@ int main(void)
 
 	sysclk_init();
 	board_init();
-	ui_init();
-	ui_powerdown();
 
 	memories_initialization();
+	aes_init();
 	
-	write_pass(password, 8);
-	if (validate_pass(password, 8))
-	{
-		LED_On(LED0);
-	} else {
-		LED_Off(LED0);
-	}
+	// TODO: Uncomment when ready
+	//write_pass(password);
+	//if (validate_pass(password))
+	//{
+		//LED_On(LED0);
+	//} else {
+		//LED_Off(LED0);
+	//}
 	
-	/* USART SETUP todo: extract into function */
+	/* USART SETUP */
 	usart_comm_init();
 	
 	// Start USB stack to authorize VBus monitoring
@@ -117,12 +118,12 @@ void main_vbus_action(bool b_high)
 
 void main_suspend_action(void)
 {
-	ui_powerdown();
+	// Do nothing
 }
 
 void main_resume_action(void)
 {
-	ui_wakeup();
+	// Do nothing
 }
 
 void main_sof_action(void)
