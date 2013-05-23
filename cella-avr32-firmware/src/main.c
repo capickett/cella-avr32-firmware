@@ -49,9 +49,15 @@
 #include "aes_dma.h"
 
 static bool main_b_msc_enable = false;
-static const uint32_t password[2] = {
+static const uint32_t password[8] = {
 	0x31323334,
-	0x35363738
+	0x35363738,
+	0x00000000,
+	0x00000000,
+	0x00000000,
+	0x00000000,
+	0x00000000,
+	0x00000000
 };
 
 /*! \brief Main function. Execution starts here.
@@ -69,15 +75,14 @@ int main(void)
 
 	memories_initialization();
 	aes_init();
-	
-	// TODO: Uncomment when ready
-	//write_pass(password);
-	//if (validate_pass(password))
-	//{
-		//LED_On(LED0);
-	//} else {
-		//LED_Off(LED0);
-	//}
+
+	write_pass((uint8_t*) password);
+	if (validate_pass((uint8_t*) password))
+	{
+		LED_On(LED0);
+	} else {
+		LED_Off(LED0);
+	}
 	
 	/* USART SETUP */
 	usart_comm_init();
@@ -90,11 +95,10 @@ int main(void)
 		// thereby VBUS has to be considered as present
 		main_vbus_action(true);
 	}
-
+	
 	// The main loop manages only the power mode
 	// because the USB management is done by interrupt
 	while (true) {
-
 		if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
 				sleepmgr_enter_sleep();

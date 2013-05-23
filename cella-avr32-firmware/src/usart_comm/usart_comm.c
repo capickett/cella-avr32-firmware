@@ -37,8 +37,9 @@ static bool unlock_drive(uint8_t* passwd) {
 static bool read_password(void) {
 	uint8_t passwd[MAX_PASS_LENGTH];
 	int i;
-	for (i = 0; i < MAX_PASS_LENGTH; ++i)
-	usart_read_char(USART_BT, (int*) &passwd[i]);
+	for (i = 0; i < MAX_PASS_LENGTH; ++i) {
+		passwd[i] = usart_getchar(USART_BT);
+	}
 	return unlock_drive((uint8_t*) passwd);
 }
 
@@ -47,7 +48,7 @@ static bool read_config(encrypt_config_t *config) {
 	int i;
 	int max = sizeof(*config);
 	for (i = 0; i < max; ++i) {
-		usart_read_char(USART_BT, (int *) &config_string[i]);
+		config_string[i] = usart_getchar(USART_BT);
 	}
 	
 	// Read config from byte string
@@ -72,7 +73,7 @@ static void process_data(void) {
 	LED_Toggle(LED0);
 	int c;
 	encrypt_config_t config;
-	usart_read_char(USART_BT, &c);
+	c = usart_getchar(USART_BT);
 
 	switch (c) {
 	case 'c':
@@ -98,12 +99,12 @@ static void process_data(void) {
 }
 
 /* USART Setup */
-void usart_comm_init()
-{
+void usart_comm_init() {
 	gpio_enable_module(USART_BT_GPIO_MAP,
 			sizeof(USART_BT_GPIO_MAP) / sizeof(USART_BT_GPIO_MAP[0]));
+
 	usart_serial_init(USART_BT, &usart_options);
-	
+		
 	Disable_global_interrupt();
 	
 	INTC_init_interrupts();
