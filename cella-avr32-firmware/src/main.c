@@ -42,11 +42,12 @@
  */
 #include <asf.h>
 #include "conf_usb.h"
-#include "data_mount.h"
 #include "ui.h"
 #include "security.h"
 #include "usart_comm.h"
 #include "aes_dma.h"
+#include "sd_access.h"
+#include "sd_mmc.h"
 
 static bool main_b_msc_enable = false;
 static const uint32_t password[8] = {
@@ -75,17 +76,11 @@ int main(void)
 
 	memories_initialization();
 	aes_init();
-
-	write_pass((uint8_t*) password);
-	if (validate_pass((uint8_t*) password))
-	{
-		LED_On(LED0);
-	} else {
-		LED_Off(LED0);
-	}
 	
 	/* USART SETUP */
 	usart_comm_init();
+	
+	sd_change_encryption(0, false);
 	
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
