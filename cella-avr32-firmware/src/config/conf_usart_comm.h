@@ -8,7 +8,4 @@
 
 #ifndef CONF_USART_COMM_H_
 #define CONF_USART_COMM_H_
-
-
-
 #endif /* CONF_USART_COMM_H_ */

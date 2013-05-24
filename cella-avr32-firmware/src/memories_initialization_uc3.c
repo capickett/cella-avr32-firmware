@@ -46,6 +46,7 @@
 #include "conf_access.h"
 #include "main.h"
 #include "security.h"
+#include "sd_mmc.h"
 
 #if (defined AT45DBX_MEM) && (AT45DBX_MEM == ENABLE)
 # include "conf_at45dbx.h"

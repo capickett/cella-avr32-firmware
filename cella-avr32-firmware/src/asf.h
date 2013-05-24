@@ -77,6 +77,9 @@
 // From module: Generic board support
 #include <board.h>
 
+// From module: INTC - Interrupt Controller
+#include <intc.h>
+
 // From module: IOPORT - General purpose I/O service
 #include <ioport.h>
 
@@ -132,8 +135,6 @@
 // From module: Sleep manager - UC3 implementation
 #include <sleepmgr.h>
 #include <uc3/sleepmgr.h>
-
-#include <sd_mmc.h>
 
 // From module: System Clock Control - UC3 A3/A4 implementation
 #include <sysclk.h>

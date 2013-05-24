@@ -42,15 +42,23 @@
  */
 #include <asf.h>
 #include "conf_usb.h"
-#include "data_mount.h"
 #include "ui.h"
 #include "security.h"
 #include "usart_comm.h"
+#include "aes_dma.h"
+#include "sd_access.h"
+#include "sd_mmc.h"
 
 static bool main_b_msc_enable = false;
-static const uint32_t password[2] = {
+static const uint32_t password[8] = {
 	0x31323334,
-	0x35363738
+	0x35363738,
+	0x00000000,
+	0x00000000,
+	0x00000000,
+	0x00000000,
+	0x00000000,
+	0x00000000
 };
 
 /*! \brief Main function. Execution starts here.
@@ -65,21 +73,14 @@ int main(void)
 
 	sysclk_init();
 	board_init();
-	ui_init();
-	ui_powerdown();
 
 	memories_initialization();
+	aes_init();
 	
-	//write_pass(password, 8);
-	//if (validate_pass(password, 8))
-	//{
-		//LED_On(LED0);
-	//} else {
-		//LED_Off(LED0);
-	//}
-	
-	/* USART SETUP todo: extract into function */
+	/* USART SETUP */
 	usart_comm_init();
+	
+	sd_change_encryption(0, false);
 	
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
@@ -89,11 +90,10 @@ int main(void)
 		// thereby VBUS has to be considered as present
 		main_vbus_action(true);
 	}
-
+	
 	// The main loop manages only the power mode
 	// because the USB management is done by interrupt
 	while (true) {
-
 		if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
 				sleepmgr_enter_sleep();
@@ -117,12 +117,12 @@ void main_vbus_action(bool b_high)
 
 void main_suspend_action(void)
 {
-	ui_powerdown();
+	// Do nothing
 }
 
 void main_resume_action(void)
 {
-	ui_wakeup();
+	// Do nothing
 }
 
 void main_sof_action(void)

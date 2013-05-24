@@ -11,7 +11,6 @@
 #include "flashc.h"
 
 static uint8_t hash_buf[HASH_LENGTH];
-static uint8_t salt_buf[SALT_LENGTH];
 
 // TODO: Generate random salt
 static const uint32_t default_salt[SALT_LENGTH/4] = {
@@ -36,31 +35,31 @@ static void flash_write_user_salt(uint8_t *salt)
 }
 
 // TODO: Remove len argument
-static void hash_pass(uint8_t *password, uint8_t *salt, uint8_t len, uint8_t *output)
+static void hash_pass(uint8_t *password, uint8_t *salt, uint8_t *output)
 {
-	uint8_t buf[SALT_LENGTH + len];
+	uint8_t buf[SALT_LENGTH + MAX_PASS_LENGTH];
 	memcpy(buf, salt, SALT_LENGTH);
-	memcpy(buf + SALT_LENGTH, password, len);
-	sha2(buf, SALT_LENGTH + len, output, 0);
+	memcpy(buf + SALT_LENGTH, password, MAX_PASS_LENGTH);
+	sha2(buf, SALT_LENGTH + MAX_PASS_LENGTH, output, 0);
 }
 
 void flash_init()
 {
-	if (!flashc_is_security_bit_active())
-		flashc_activate_security_bit();
+	//if (!flashc_is_security_bit_active())
+		//flashc_activate_security_bit();
 }
 
 // TODO: Remove len argument
-bool validate_pass(uint8_t *password, uint8_t len)
+bool validate_pass(uint8_t *password)
 {
-	hash_pass(password, (uint8_t *)user_data->salt, len, hash_buf);
-	return !strncmp(hash_buf, (uint8_t *)user_data->hash, HASH_LENGTH);
+	hash_pass(password, (uint8_t*) user_data->salt, hash_buf);
+	return !strncmp((const char*) hash_buf, (const char*)user_data->hash, HASH_LENGTH);
 }
 
 //TODO: Remove len argument
-void write_pass(uint8_t *password, uint8_t len)
+void write_pass(uint8_t *password)
 {
-	hash_pass(password, default_salt, len, hash_buf);
+	hash_pass(password, (uint8_t*) default_salt, hash_buf);
 	flash_write_user_hash(hash_buf);
-	flash_write_user_salt(default_salt);
+	flash_write_user_salt((uint8_t*) default_salt);
 }
