@@ -28,25 +28,20 @@ typedef struct user_data_struct
 	uint8_t salt[SALT_LENGTH];
 } user_data_t;
 
-#if defined (__GNUC__)
-__attribute__((__section__(".userpage")))
-#elif defined(__ICCAVR32__)
-__no_init
-#endif
-static user_data_t user_data_st
-#if defined (__ICCAVR32__)
-@ "USERDATA32_C"
-#endif
-;
-
-#define user_data (&user_data_st)
-
 /* Function declarations */
 
-void flash_init(void);
+void security_flash_init(void);
 
-bool validate_pass(uint8_t *password);
+bool security_validate_pass(uint8_t *password);
 
-void write_pass(uint8_t *password);
+void security_write_pass(uint8_t *password);
+
+void security_write_config(encrypt_config_t *config_ptr);
+
+void security_get_user_hash(uint8_t **hash_ptr);
+
+void security_get_user_salt(uint8_t **salt_ptr);
+
+void security_get_user_config(encrypt_config_t **config_ptr);
 
 #endif /* SECURITY_H_ */

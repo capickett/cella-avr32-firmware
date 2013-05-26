@@ -10,10 +10,16 @@
 #include "aes_dma.h"
 #include "ctrl_access.h"
 #include "security.h"
+#include "polarssl/sha2.h"
+#include "udc.h"
+#include "delay.h"
 
-bool data_mounted = true;
-static uint8_t src_buf[SD_MMC_BLOCK_SIZE];
-static uint8_t dest_buf[SD_MMC_BLOCK_SIZE];
+bool data_mounted = false;
+static uint8_t hash_buf_cipher[HASH_LENGTH];
+static uint8_t src_buf[SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS];
+static uint8_t dest_buf[SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS];
+static uint8_t old_hash_cipher_key[HASH_LENGTH];
+static uint8_t new_hash_cipher_key[HASH_LENGTH];
 
 void mount_data()
 {
@@ -25,46 +31,68 @@ void unmount_data()
 	data_mounted = false;
 }
 
+bool unlock_drive(uint8_t* passwd) {
+	if (security_validate_pass(passwd)) {
+		sha2(passwd, MAX_PASS_LENGTH, hash_buf_cipher, 0);
+		aes_set_key(&AVR32_AES, (unsigned int *)hash_buf_cipher);
+		mount_data();
+		return true;
+	} else {
+		return false;
+	}
+}
+
 /* Changes the encryption level of the drive.
    If encrypt is true: encrypt drive, else decrypt */
-uint8_t sd_change_encryption(uint8_t slot, bool encrypt)
+uint8_t sd_change_encryption(uint8_t slot, bool encrypt, bool change_key, uint8_t *old_passwd, uint8_t *new_passwd)
 {
-	if (encrypt != user_data->config.encryption_level)
+	sd_mmc_err_t err;
+	uint32_t i, nb_blocks;
+	encrypt_config_t *config_ptr = NULL;
+	
+	security_get_user_config(&config_ptr);
+	if ((encrypt == config_ptr->encryption_level) && !change_key)
 		return CTRL_GOOD;
 	
-	uint32_t nb_blocks = sd_mmc_get_capacity(SD_SLOT_INDEX) * 2;	
-	//uint32_t nb_blocks = 7822336 * 2;
-	
-	for (uint32_t i = 0; i < nb_blocks; ++i) {
-		switch (sd_mmc_init_read_blocks(slot, i, 1)) {
-			case SD_MMC_OK:
-			break;
-			case SD_MMC_ERR_NO_CARD:
-			return CTRL_NO_PRESENT;
-			default:
-			return CTRL_FAIL;
-		}
-		if (SD_MMC_OK != sd_mmc_start_read_blocks(src_buf, 1)) {
-			return CTRL_FAIL;
-		}
-		if (SD_MMC_OK != sd_mmc_wait_end_of_read_blocks()) {
-			return CTRL_FAIL;
-		}
-		ram_aes_ram(encrypt, SD_MMC_BLOCK_SIZE/sizeof(unsigned int), (unsigned int *)src_buf, (unsigned int *)dest_buf);
-		switch (sd_mmc_init_write_blocks(slot, i, 1)) {
-			case SD_MMC_OK:
-			break;
-			case SD_MMC_ERR_NO_CARD:
-			return CTRL_NO_PRESENT;
-			default:
-			return CTRL_FAIL;
-		}
-		if (SD_MMC_OK != sd_mmc_start_write_blocks(dest_buf, 1)) {
-			return CTRL_FAIL;
-		}
-		if (SD_MMC_OK != sd_mmc_wait_end_of_write_blocks()) {
-			return CTRL_FAIL;
-		}
+	if (change_key) {
+		sha2(old_passwd, MAX_PASS_LENGTH, old_hash_cipher_key, 0);
+		sha2(new_passwd, MAX_PASS_LENGTH, new_hash_cipher_key, 0);
 	}
+	
+	if (old_hash_cipher_key == new_hash_cipher_key)
+		return CTRL_GOOD;
+	
+	do {
+		err = sd_mmc_check(slot);
+		if ((SD_MMC_ERR_NO_CARD != err)
+		&& (SD_MMC_INIT_ONGOING != err)
+		&& (SD_MMC_OK != err)) {
+			while (SD_MMC_ERR_NO_CARD != sd_mmc_check(slot)) {
+			}
+		}
+	} while (SD_MMC_OK != err);
+	
+	nb_blocks = sd_mmc_get_capacity(slot) * (1024 / SD_MMC_BLOCK_SIZE);
+	
+	for (i = 0; i < nb_blocks / SD_BLOCKS_PER_ACCESS; ++i) {
+		if (SD_MMC_OK != sd_mmc_init_read_blocks(slot, i, SD_BLOCKS_PER_ACCESS))
+			return CTRL_FAIL;
+		if (SD_MMC_OK != sd_mmc_start_read_blocks(src_buf, SD_BLOCKS_PER_ACCESS))
+			return CTRL_FAIL;
+		if (SD_MMC_OK != sd_mmc_wait_end_of_read_blocks())
+			return CTRL_FAIL;
+		aes_set_key(&AVR32_AES, (unsigned int *)old_hash_cipher_key);
+		ram_aes_ram(change_key ? false : encrypt, SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS / sizeof(unsigned int), (unsigned int *)src_buf, (unsigned int *)dest_buf);
+		if (change_key) {
+			aes_set_key(&AVR32_AES, (unsigned int *)new_hash_cipher_key);
+			ram_aes_ram(true, SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS / sizeof(unsigned int), (unsigned int *)dest_buf, (unsigned int *)src_buf);
+		}
+		if (SD_MMC_OK != sd_mmc_init_write_blocks(slot, i, SD_BLOCKS_PER_ACCESS))
+			return CTRL_FAIL;
+		if (SD_MMC_OK != sd_mmc_start_write_blocks(src_buf, SD_BLOCKS_PER_ACCESS))
+			return CTRL_FAIL;
+		if (SD_MMC_OK != sd_mmc_wait_end_of_write_blocks())
+			return CTRL_FAIL;
+	}	
 	return CTRL_GOOD;
 }

@@ -19,16 +19,16 @@ static const unsigned int init_vector[4] = {
 
 // CipherKey array
 // the_key = 256'h603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4;
-const unsigned int      hash_key_cipher[8] = {
-	0x603deb10,
-	0x15ca71be,
-	0x2b73aef0,
-	0x857d7781,
-	0x1f352c07,
-	0x3b6108d7,
-	0x2d9810a3,
-	0x0914dff4
-};
+//const unsigned int      hash_key_cipher[8] = {
+	//0x603deb10,
+	//0x15ca71be,
+	//0x2b73aef0,
+	//0x857d7781,
+	//0x1f352c07,
+	//0x3b6108d7,
+	//0x2d9810a3,
+	//0x0914dff4
+//};
 
 void aes_init()
 {
@@ -45,8 +45,6 @@ void aes_init()
 	AesConf.CFBSize = 0;                        // Don't-care because we're using the CBC mode.
 	AesConf.CounterMeasureMask = 0;             // Disable all counter measures.
 	aes_configure(&AVR32_AES, &AesConf);
-	
-	aes_set_key(&AVR32_AES, (const unsigned int*) hash_key_cipher);
 }
 
 void ram_aes_ram(bool encrypt, unsigned short int u16BufferSize, unsigned int *pSrcBuf, unsigned int *pDstBuf)

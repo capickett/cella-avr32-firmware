@@ -46,8 +46,6 @@
 #include "security.h"
 #include "usart_comm.h"
 #include "aes_dma.h"
-#include "sd_access.h"
-#include "sd_mmc.h"
 
 static bool main_b_msc_enable = false;
 static const uint32_t password[8] = {
@@ -80,7 +78,11 @@ int main(void)
 	/* USART SETUP */
 	usart_comm_init();
 	
-	sd_change_encryption(0, false);
+	/* First-time initialization only, not needed once password/config has been set */
+	security_write_pass((uint8_t *)password);
+	encrypt_config_t config;
+	config.encryption_level = 1;
+	security_write_config(&config);
 	
 	// Start USB stack to authorize VBus monitoring
 	udc_start();

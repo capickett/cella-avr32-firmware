@@ -286,26 +286,26 @@ U8 get_cur_lun(void)
 
 Ctrl_status mem_test_unit_ready(U8 lun)
 {
-  Ctrl_status status;
+	Ctrl_status status;
 
-  if (!Ctrl_access_lock()) return CTRL_FAIL;
+	if (!Ctrl_access_lock()) return CTRL_FAIL;
 
-if ((lun == SD_LUN_INDEX) && data_mounted == false)
-	return CTRL_NO_PRESENT;
+	if ((lun == SD_LUN_INDEX) && data_mounted == false)
+		return CTRL_NO_PRESENT;
 	
-  status =
+	status =
 #if MAX_LUN
-         (lun < MAX_LUN) ? lun_desc[lun].test_unit_ready() :
+    (lun < MAX_LUN) ? lun_desc[lun].test_unit_ready() :
 #endif
 #if LUN_USB == ENABLE
-                             Lun_usb_test_unit_ready(lun - LUN_ID_USB);
+	Lun_usb_test_unit_ready(lun - LUN_ID_USB);
 #else
-                             CTRL_FAIL;
+	CTRL_FAIL;
 #endif
 
-  Ctrl_access_unlock();
+	Ctrl_access_unlock();
 
-  return status;
+	return status;
 }
 
 

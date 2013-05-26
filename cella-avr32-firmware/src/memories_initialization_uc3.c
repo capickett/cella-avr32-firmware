@@ -167,6 +167,6 @@ void memories_initialization(void)
 	sd_mmc_init();
 #endif
 
-	flash_init();
+	security_flash_init();
 }
 
