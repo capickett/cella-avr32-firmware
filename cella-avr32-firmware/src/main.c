@@ -47,6 +47,7 @@
 #include "usart_comm.h"
 #include "aes_dma.h"
 #include "sd_access.h"
+#include "entropy.h"
 
 static bool main_b_msc_enable = false;
 static const uint32_t password[8] = {
@@ -76,6 +77,7 @@ int main(void)
 	memories_initialization();
 	sd_access_init();
 	aes_init();
+	entropy_init();
 		
 	/* USART SETUP */
 	usart_comm_init();

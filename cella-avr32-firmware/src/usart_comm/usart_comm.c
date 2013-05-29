@@ -46,38 +46,23 @@ static void usart_comm_read_password(void) {
 	}
 }
 
-static bool usart_comm_read_config(encrypt_config_t *config) {
-	//uint8_t config_string[sizeof(*config)];
-	//encrypt_config_t *config_ptr;
-	//int i;
-	//int max = sizeof(*config);
-	//for (i = 0; i < max; ++i) {
-		//config_string[i] = usart_getchar(USART_BT);
-	//}
-	//
-	//// Read config from byte string
-	//config->encryption_level = config_string[0];
-	//
-	//if (config->encryption_level != !!config->encryption_level)
-		//return false;
-	//
-	//security_get_user_config(config_ptr);
-	//if (config->encryption_level != config_ptr->encryption_level)
-		//sd_change_encryption(SD_SLOT_INDEX, config->encryption_level, false, NULL, NULL);
-		//
-	//flashc_memcpy(config_ptr, config, sizeof(*config), true);
+static bool usart_comm_read_config(void) {
+	int i, max;
+	uint8_t config_string[sizeof(encrypt_config_t)];
 	encrypt_config_t *config_ptr = NULL;
-	encrypt_config_t new_config;
 	security_get_user_config(&config_ptr);
-		
-	uint8_t encryption_char = usart_getchar(USART_BT);
-	uint8_t encrypt_level = (encryption_char == '1') ? 1 : 0;
+	
+	max = sizeof(encrypt_config_t);
+	for (i = 0; i < max; ++i) {
+		config_string[i] = usart_getchar(USART_BT);
+	}
+	
+	uint8_t encrypt_level = ((encrypt_config_t *)config_string)->encryption_level;
+	if (encrypt_level != !!encrypt_level)
+		return false;
 	
 	if (config_ptr->encryption_level != encrypt_level) {
-		//if (!sd_change_encryption(SD_SLOT_INDEX, encrypt_level, false, NULL, NULL))
-			//return false;
-		new_config.encryption_level = encrypt_level;
-		flashc_memcpy(config_ptr, &new_config, sizeof(new_config), true);	
+		flashc_memcpy(config_ptr, (encrypt_config_t *)config_string, sizeof(encrypt_config_t), true);	
 	}			
 	return true;
 }
@@ -102,7 +87,6 @@ __attribute__((__interrupt__))
 static void process_data(void) {
 	LED_Toggle(LED0);
 	volatile int c;
-	encrypt_config_t config;
 	c = usart_getchar(USART_BT);
 
 	switch (c) {
@@ -116,7 +100,7 @@ static void process_data(void) {
 				usart_write_char(USART_BT, ACK_OK);
 			}
 			sd_access_unmount_data();
-			if (usart_comm_read_config(&config)) {
+			if (usart_comm_read_config()) {
 				usart_write_char(USART_BT, ACK_OK);
 			} else {
 				usart_write_char(USART_BT, ACK_BAD);
@@ -140,6 +124,7 @@ static void process_data(void) {
 			usart_comm_read_password();
 			if (!data_locked) {
 				usart_write_char(USART_BT, ACK_OK);
+				secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 				break;
 			}
 			if (sd_access_unlock_drive(password_buf)) {
@@ -147,15 +132,20 @@ static void process_data(void) {
 			} else {
 				usart_write_char(USART_BT, ACK_BAD);
 			}
+			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			break;
 		case HANDLE_SET_PASS: {
-			if (data_locked) {
+			usart_comm_read_password();
+			if (!security_validate_pass(password_buf)) {
+				secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 				usart_write_char(USART_BT, ACK_BAD);
-				break;
+				break;	
 			}
+			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			sd_access_unmount_data();
 			usart_comm_read_password();
 			security_write_pass(password_buf);
+			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			sd_access_mount_data();
 			usart_write_char(USART_BT, ACK_OK);
 			break;
@@ -176,7 +166,7 @@ static void process_data(void) {
 			sd_access_unmount_data();
 			sd_access_lock_data();
 			usart_write_char(USART_BT, ACK_OK);
-			memset(password_buf, 0, MAX_PASS_LENGTH);
+			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			break;
 		default:
 			usart_write_char(USART_BT, ACK_BAD);
