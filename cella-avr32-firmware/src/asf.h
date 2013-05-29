@@ -52,6 +52,9 @@
  * running the ASF driver selector tool. Any changes will be discarded.
  */
 
+// From module: ADC - Analog to Digital Converter
+#include <adc.h>
+
 // From module: AES - Advanced Encryption Standard
 #include <aes.h>
 

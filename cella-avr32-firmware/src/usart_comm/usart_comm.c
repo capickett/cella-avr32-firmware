@@ -6,6 +6,7 @@
  */ 
 
 #include <asf.h>
+#include <string.h>
 #include "usart_comm.h"
 #include "security.h"
 #include "sd_access.h"
@@ -17,12 +18,14 @@
 #define HANDLE_INPUT_PASS		'p'
 #define HANDLE_SET_PASS			'n'
 #define HANDLE_ENCRYPT_QUERY	'?'
-#define HANDLE_TOGGLE_MOUNT		't'
+#define HANDLE_RELOCK			'l'
 #define ACK_OK					'K'
 #define ACK_BAD					'~'
 #define ACK_UNLOCKED			'U'
 #define ACK_LOCKED				'L'
 	
+static uint8_t password_buf[MAX_PASS_LENGTH];
+
 static const gpio_map_t USART_BT_GPIO_MAP = {
 	{ USART_BT_RX_PIN, USART_BT_RX_FUNCTION },
 	{ USART_BT_TX_PIN, USART_BT_TX_FUNCTION }
@@ -36,10 +39,10 @@ static usart_serial_options_t usart_options = {
 	.channelmode = CONFIG_USART_BT_SERIAL_MODE
 };
 
-static void usart_comm_read_password(uint8_t *passwd) {
+static void usart_comm_read_password(void) {
 	int i;
 	for (i = 0; i < MAX_PASS_LENGTH; ++i) {
-		passwd[i] = usart_getchar(USART_BT);
+		password_buf[i] = usart_getchar(USART_BT);
 	}
 }
 
@@ -98,87 +101,82 @@ __attribute__((__interrupt__))
 #endif
 static void process_data(void) {
 	LED_Toggle(LED0);
-	int c;
-	uint8_t passwd[MAX_PASS_LENGTH];
+	volatile int c;
 	encrypt_config_t config;
 	c = usart_getchar(USART_BT);
 
 	switch (c) {
+		case USART_FAILURE:
+			break;
 		case HANDLE_SET_CONFIG:
-			usart_comm_read_password(passwd);
-			if (security_validate_pass(passwd)) {
+			if (data_locked) {
+				usart_write_char(USART_BT, ACK_BAD);
+				break;
+			} else {
 				usart_write_char(USART_BT, ACK_OK);
-				if (data_mounted)
-					unmount_data();
-				if (usart_comm_read_config(&config)) {
-					usart_write_char(USART_BT, ACK_OK);
-				} else {
-					usart_write_char(USART_BT, ACK_BAD);
-				}
+			}
+			sd_access_unmount_data();
+			if (usart_comm_read_config(&config)) {
+				usart_write_char(USART_BT, ACK_OK);
 			} else {
 				usart_write_char(USART_BT, ACK_BAD);
 			}
+			sd_access_mount_data();
 			break;
 		case HANDLE_GET_CONFIG:
-			usart_comm_read_password(passwd);
-			if (security_validate_pass(passwd)) {
+			if (data_locked) {
+				usart_write_char(USART_BT, ACK_BAD);
+				break;
+			} else {
 				usart_write_char(USART_BT, ACK_OK);
-				if (usart_comm_write_config()) {
-					usart_write_char(USART_BT, ACK_OK);
-				} else {
-					usart_write_char(USART_BT, ACK_BAD);
-				}
+			}
+			if (usart_comm_write_config()) {
+				usart_write_char(USART_BT, ACK_OK);
 			} else {
 				usart_write_char(USART_BT, ACK_BAD);
 			}
 			break;
-		case HANDLE_INPUT_PASS:	{
-			if (data_mounted) {
+		case HANDLE_INPUT_PASS:
+			usart_comm_read_password();
+			if (!data_locked) {
+				usart_write_char(USART_BT, ACK_OK);
+				break;
+			}
+			if (sd_access_unlock_drive(password_buf)) {
+				usart_write_char(USART_BT, ACK_OK);
+			} else {
+				usart_write_char(USART_BT, ACK_BAD);
+			}
+			break;
+		case HANDLE_SET_PASS: {
+			if (data_locked) {
 				usart_write_char(USART_BT, ACK_BAD);
 				break;
 			}
-			usart_comm_read_password(passwd);
-			if (unlock_drive(passwd)) {
-				usart_write_char(USART_BT, ACK_OK);
-			} else {
-				usart_write_char(USART_BT, ACK_BAD);
-			}
-			break;
-		}
-		case HANDLE_SET_PASS: {
-			uint8_t old_passwd[MAX_PASS_LENGTH];
-			uint8_t new_passwd[MAX_PASS_LENGTH];
-			usart_comm_read_password(old_passwd);
-			if (security_validate_pass(old_passwd)) {
-				usart_write_char(USART_BT, ACK_OK);
-				if (data_mounted)
-					unmount_data();
-				usart_comm_read_password(new_passwd);
-				//if (sd_change_encryption(SD_SLOT_INDEX, false, true, old_passwd, new_passwd) == CTRL_GOOD) {
-				security_write_pass(new_passwd);
-				usart_write_char(USART_BT, ACK_OK);
-				//} else {
-					//usart_write_char(USART_BT, ACK_BAD);
-				//}
-			} else {
-				usart_write_char(USART_BT, ACK_BAD);
-			}
+			sd_access_unmount_data();
+			usart_comm_read_password();
+			security_write_pass(password_buf);
+			sd_access_mount_data();
+			usart_write_char(USART_BT, ACK_OK);
 			break;
 		}
 		case HANDLE_ENCRYPT_QUERY:
 			usart_putchar(USART_BT, '?');
-			if (data_mounted) {
-				usart_putchar(USART_BT, ACK_UNLOCKED);
-			} else {
+			if (data_locked) {
 				usart_putchar(USART_BT, ACK_LOCKED);
+			} else {
+				usart_putchar(USART_BT, ACK_UNLOCKED);
 			}
 			break;
-		case HANDLE_TOGGLE_MOUNT:
-			if (data_mounted) {
-				unmount_data();
-			} else {
-				mount_data();
+		case HANDLE_RELOCK:
+			if (data_locked) {
+				usart_write_char(USART_BT, ACK_BAD);
+				break;
 			}
+			sd_access_unmount_data();
+			sd_access_lock_data();
+			usart_write_char(USART_BT, ACK_OK);
+			memset(password_buf, 0, MAX_PASS_LENGTH);
 			break;
 		default:
 			usart_write_char(USART_BT, ACK_BAD);

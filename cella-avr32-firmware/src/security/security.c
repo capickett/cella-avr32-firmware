@@ -10,6 +10,7 @@
 #include "security.h"
 #include "flashc.h"
 #include "sd_access.h"
+#include "entropy.h"
 
 #if defined (__GNUC__)
 __attribute__((__section__(".userpage")))
@@ -23,18 +24,7 @@ static user_data_t user_data_st
 ;
 
 static uint8_t hash_buf[HASH_LENGTH];
-
-// TODO: Generate random salt
-static const uint32_t default_salt[SALT_LENGTH/4] = {
-	0x31323334,
-	0x35363738,
-	0x31323334,
-	0x35363738,
-	0x31323334,
-	0x35363738,
-	0x31323334,
-	0x35363738
-};
+static uint8_t salt_buf[SALT_LENGTH];
 
 static void flash_write_user_hash(uint8_t *hash)
 {
@@ -63,14 +53,19 @@ void security_flash_init()
 bool security_validate_pass(uint8_t *password)
 {
 	hash_pass_salt(password, (uint8_t*) user_data_st.salt, hash_buf);
-	return !strncmp((const char*) hash_buf, (const char*)user_data_st.hash, HASH_LENGTH);
+	if (!strncmp((const char*) hash_buf, (const char*)user_data_st.hash, HASH_LENGTH)) {
+		data_locked = false;
+		return true;
+	}
+	return false;
 }
 
 void security_write_pass(uint8_t *password)
 {
-	hash_pass_salt(password, (uint8_t*) default_salt, hash_buf);
+	get_entropy(salt_buf, SALT_LENGTH);
+	hash_pass_salt(password, (uint8_t*) salt_buf, hash_buf);
 	flash_write_user_hash(hash_buf);
-	flash_write_user_salt((uint8_t*) default_salt);
+	flash_write_user_salt((uint8_t*) salt_buf);
 }
 
 void security_write_config(encrypt_config_t *config_ptr)

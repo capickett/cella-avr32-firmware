@@ -47,6 +47,7 @@
 #include "main.h"
 #include "security.h"
 #include "sd_mmc.h"
+#include "sd_access.h"
 
 #if (defined AT45DBX_MEM) && (AT45DBX_MEM == ENABLE)
 # include "conf_at45dbx.h"
@@ -166,7 +167,6 @@ void memories_initialization(void)
 	|| ((defined SD_MMC_1_MEM) && (SD_MMC_1_MEM == ENABLE))
 	sd_mmc_init();
 #endif
-
 	security_flash_init();
 }
 

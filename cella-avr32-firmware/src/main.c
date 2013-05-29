@@ -46,17 +46,18 @@
 #include "security.h"
 #include "usart_comm.h"
 #include "aes_dma.h"
+#include "sd_access.h"
 
 static bool main_b_msc_enable = false;
 static const uint32_t password[8] = {
 	0x31323334,
 	0x35363738,
-	0x00000000,
-	0x00000000,
-	0x00000000,
-	0x00000000,
-	0x00000000,
-	0x00000000
+	0x31323334,
+	0x35363738,
+	0x31323334,
+	0x35363738,
+	0x31323334,
+	0x35363738
 };
 
 /*! \brief Main function. Execution starts here.
@@ -73,8 +74,9 @@ int main(void)
 	board_init();
 
 	memories_initialization();
+	sd_access_init();
 	aes_init();
-	
+		
 	/* USART SETUP */
 	usart_comm_init();
 	

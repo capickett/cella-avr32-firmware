@@ -14,28 +14,46 @@
 #include "udc.h"
 #include "delay.h"
 
-bool data_mounted = false;
+bool data_mounted;
+bool data_locked;
 static uint8_t hash_buf_cipher[HASH_LENGTH];
 static uint8_t src_buf[SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS];
 static uint8_t dest_buf[SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS];
 static uint8_t old_hash_cipher_key[HASH_LENGTH];
 static uint8_t new_hash_cipher_key[HASH_LENGTH];
 
-void mount_data()
+void sd_access_mount_data()
 {
 	data_mounted = true;
 }
 
-void unmount_data()
+void sd_access_unmount_data()
 {
 	data_mounted = false;
 }
 
-bool unlock_drive(uint8_t* passwd) {
+void sd_access_lock_data()
+{
+	data_locked = true;
+}
+
+void sd_access_unlock_data()
+{
+	data_locked = false;
+}
+
+void sd_access_init()
+{
+	data_mounted = false;
+	data_locked = true;
+}
+
+bool sd_access_unlock_drive(uint8_t* passwd) {
 	if (security_validate_pass(passwd)) {
 		sha2(passwd, MAX_PASS_LENGTH, hash_buf_cipher, 0);
 		aes_set_key(&AVR32_AES, (unsigned int *)hash_buf_cipher);
-		mount_data();
+		sd_access_mount_data();
+		sd_access_unlock_data();
 		return true;
 	} else {
 		return false;
