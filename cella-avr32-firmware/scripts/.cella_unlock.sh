@@ -123,20 +123,20 @@ while [ "$INPUT" != '' ]; do
                  read -p "> " option
                  case $option in
                      "1") echo "Enter the new encryption level."
-                         read -p "> " value
-                         if [ $value == "0" ] || [ $value == "1" ] || [ $value == "2" ]; then
-                             newconfig="{$newconfig}e$value"
-                             echo "Encryption level is now $value"
-                         else
-                             echo "Invalid encryption level (Must be 0, 1, or 2)"
-                         fi
+                          read -p "> " value
+                          if [ $value == "0" ] || [ $value == "1" ] || [ $value == "2" ]; then
+                              newconfig="{$newconfig}e$value"
+                              echo "Encryption level is now $value"
+                          else
+                              echo "Invalid encryption level (Must be 0, 1, or 2)"
+                          fi
                          ;;
                      # new configuration options to be added here.
                      "2") echo "Updating configuration..."
-                         echo "$newconfig" > "$WRITEFILE"
-                         readresponse resp
-                         validate "$resp" "K" result "Update complete." "Update failed."
-                         break
+                          echo "$newconfig" > "$WRITEFILE"
+                          readresponse resp
+                          validate "$resp" "K" result "Update complete." "Update failed."
+                          break
                          ;;
                      *) ;;
                  esac

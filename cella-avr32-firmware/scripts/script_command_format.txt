@@ -1,0 +1,54 @@
+Script side:                                |   Chip side:
+                                            |
+h: help, prints usable commands to console. |   N/A
+   Simply for information for the user.     |
+                                            |
+--------------------------------------------|--------------------------------------------
+                                            |
+c: first retrieves configuration            |
+        CMD: g  --------------------------->|-------> Sees g, sends configuration
+                                            |         (see g for format)
+   now we have config, display menu <-------|<----------- RES: e0, e1, or e2
+   choose options.... and send.             |
+        CMD: ce0, ce1, or ce2 ------------->|-------> Sees c, sets configuration and returns
+   read response and notify user <----------|<----------- RES: K or ~
+                                            |
+--------------------------------------------|--------------------------------------------
+                                            |
+g: retrieve configuration                   |
+        CMD: g  --------------------------->|-------> Sees g, sends configuration as ASCII bytes
+                                            |           e: encryption level, [0, 1, 2]
+   print received configuration <-----------|<----------- RES: e0, e1, e2
+                                            |
+--------------------------------------------|--------------------------------------------
+                                            |
+p: unlock drive                             |
+   user must enter his password, then       |
+   the drive should unlock                  |
+        CMD: pPASSWORD -------------------->|--------> Sees p, validates password and
+                                            |          returns success/failure
+   report success or failure <--------------|<----------- RES: K or ~
+                                            |
+--------------------------------------------|--------------------------------------------
+                                            |
+n: change password                          |
+   user must first enter his password,      |
+   then enter a new password twice. The     |
+   two new passwords must match.            |
+        CMD: nOLDPASSWORD...NEWPASSWORD --->|-------> Sees n, validates password, sets password
+         (TODO: pack passwords with nulls)  |         responds with okay/fail
+   print out success/failure <--------------|------------- RES: K or ~
+                                            |
+--------------------------------------------|--------------------------------------------
+                                            |
+?: query lock state                         |
+        CMD: ? ---------------------------->|-------> Sees ?, returns ?U if unlocked, ?L if locked
+   prints out status <----------------------|<------------ RES: ?U or ?L
+                                            |
+--------------------------------------------|--------------------------------------------
+                                            |
+L: lock drive                               |
+        CMD: L ---------------------------->|-------> Sees L, locks drive, reports success/fail
+   print success/fail <---------------------|<------------ RES: K or ~
+                                            |
+--------------------------------------------|--------------------------------------------
