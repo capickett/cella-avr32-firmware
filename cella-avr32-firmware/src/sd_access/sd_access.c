@@ -5,6 +5,7 @@
  *  Author: Matt Dorsett
  */ 
 
+#include <string.h>
 #include "sd_access.h"
 #include "sd_mmc.h"
 #include "aes_dma.h"
@@ -52,6 +53,8 @@ bool sd_access_unlock_drive(uint8_t* passwd) {
 	if (security_validate_pass(passwd)) {
 		sha2(passwd, MAX_PASS_LENGTH, hash_buf_cipher, 0);
 		aes_set_key(&AVR32_AES, (unsigned int *)hash_buf_cipher);
+		delay_ms(500);
+		secure_memset(hash_buf_cipher, 0, HASH_LENGTH);
 		sd_access_mount_data();
 		sd_access_unlock_data();
 		return true;

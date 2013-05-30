@@ -25,6 +25,7 @@ static user_data_t user_data_st
 
 static uint8_t hash_buf[HASH_LENGTH];
 static uint8_t salt_buf[SALT_LENGTH];
+static uint8_t hash_salt_buf[MAX_PASS_LENGTH + SALT_LENGTH];
 
 static void flash_write_user_hash(uint8_t *hash)
 {
@@ -38,10 +39,10 @@ static void flash_write_user_salt(uint8_t *salt)
 
 static void hash_pass_salt(uint8_t *password, uint8_t *salt, uint8_t *output)
 {
-	uint8_t buf[SALT_LENGTH + MAX_PASS_LENGTH];
-	memcpy(buf, salt, SALT_LENGTH);
-	memcpy(buf + SALT_LENGTH, password, MAX_PASS_LENGTH);
-	sha2(buf, SALT_LENGTH + MAX_PASS_LENGTH, output, 0);
+	memcpy(hash_salt_buf, salt, SALT_LENGTH);
+	memcpy(hash_salt_buf + SALT_LENGTH, password, MAX_PASS_LENGTH);
+	sha2(hash_salt_buf, SALT_LENGTH + MAX_PASS_LENGTH, output, 0);
+	secure_memset(hash_salt_buf, 0, SALT_LENGTH + MAX_PASS_LENGTH);
 }
 
 void security_flash_init()
@@ -55,8 +56,10 @@ bool security_validate_pass(uint8_t *password)
 	hash_pass_salt(password, (uint8_t*) user_data_st.salt, hash_buf);
 	if (!strncmp((const char*) hash_buf, (const char*)user_data_st.hash, HASH_LENGTH)) {
 		data_locked = false;
+		secure_memset(hash_buf, 0, HASH_LENGTH);
 		return true;
 	}
+	secure_memset(hash_buf, 0, HASH_LENGTH);
 	return false;
 }
 
@@ -66,6 +69,8 @@ void security_write_pass(uint8_t *password)
 	hash_pass_salt(password, (uint8_t*) salt_buf, hash_buf);
 	flash_write_user_hash(hash_buf);
 	flash_write_user_salt((uint8_t*) salt_buf);
+	secure_memset(hash_buf, 0, HASH_LENGTH);
+	secure_memset(salt_buf, 0, SALT_LENGTH);
 }
 
 void security_write_config(encrypt_config_t *config_ptr)
@@ -75,15 +80,22 @@ void security_write_config(encrypt_config_t *config_ptr)
 
 void security_get_user_hash(uint8_t **hash_ptr)
 {
-	*hash_ptr = user_data_st.hash;
+	hash_ptr = user_data_st.hash;
 }
 
 void security_get_user_salt(uint8_t **salt_ptr)
 {
-	*salt_ptr = user_data_st.salt;
+	salt_ptr = user_data_st.salt;
 }
 
 void security_get_user_config(encrypt_config_t **config_ptr)
 {
 	*config_ptr = &user_data_st.config;
+}
+
+void *secure_memset(void *v, int c, size_t n)
+{
+	volatile unsigned char *p = v;
+	while (n--) *p++ = c;
+	return v;
 }

@@ -20,8 +20,7 @@
 #define FLASH_SIZE 512
 
 /* Structure of user data in FLASH */
-
-typedef struct user_data_struct
+typedef struct __attribute__((packed)) user_data_struct
 {
 	encrypt_config_t config;
 	uint8_t hash[HASH_LENGTH];
@@ -43,5 +42,7 @@ void security_get_user_hash(uint8_t **hash_ptr);
 void security_get_user_salt(uint8_t **salt_ptr);
 
 void security_get_user_config(encrypt_config_t **config_ptr);
+
+void *secure_memset(void *v, int c, size_t n);
 
 #endif /* SECURITY_H_ */
