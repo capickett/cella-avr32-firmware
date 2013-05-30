@@ -10,7 +10,6 @@
 #include "delay.h"
 
 #define ADC						(&AVR32_ADC)
-#define MS_DELAY				50
 
 static const gpio_map_t ADC_GPIO_MAP = 
 {
@@ -19,10 +18,9 @@ static const gpio_map_t ADC_GPIO_MAP =
 
 void get_entropy(uint8_t *entropy_buf, uint8_t bytes)
 {
-	adc_start(ADC);
 	int i;
 	for (i = 0; i < bytes; ++i) {
-		delay_ms(MS_DELAY);
+		adc_start(ADC);
 		entropy_buf[i] = adc_get_value(ADC, ADC_LIGHT_CHANNEL);
 	}
 }

@@ -12,6 +12,7 @@
 #include "sd_access.h"
 #include "flashc.h"
 #include "aes.h"
+#include "delay.h"
 
 #define HANDLE_SET_CONFIG		'c'
 #define HANDLE_GET_CONFIG		'g'
@@ -73,7 +74,7 @@ static bool usart_comm_write_config(void) {
 	uint8_t *config_byte_ptr = (uint8_t *)config_ptr;
 	int i;
 	for (i = 0; i < sizeof(*config_ptr); ++i) {
-		usart_write_char(USART_BT, config_byte_ptr[i]);
+		usart_putchar(USART_BT, config_byte_ptr[i]);
 	}
 	return true;
 }
@@ -94,43 +95,43 @@ static void process_data(void) {
 			break;
 		case HANDLE_SET_CONFIG:
 			if (data_locked) {
-				usart_write_char(USART_BT, ACK_BAD);
+				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			} else {
-				usart_write_char(USART_BT, ACK_OK);
+				usart_putchar(USART_BT, ACK_OK);
 			}
-			sd_access_unmount_data();
+			//sd_access_unmount_data();
 			if (usart_comm_read_config()) {
-				usart_write_char(USART_BT, ACK_OK);
+				usart_putchar(USART_BT, ACK_OK);
 			} else {
-				usart_write_char(USART_BT, ACK_BAD);
+				usart_putchar(USART_BT, ACK_BAD);
 			}
-			sd_access_mount_data();
+			//sd_access_mount_data();
 			break;
 		case HANDLE_GET_CONFIG:
 			if (data_locked) {
-				usart_write_char(USART_BT, ACK_BAD);
+				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			} else {
-				usart_write_char(USART_BT, ACK_OK);
+				usart_putchar(USART_BT, ACK_OK);
 			}
 			if (usart_comm_write_config()) {
-				usart_write_char(USART_BT, ACK_OK);
+				usart_putchar(USART_BT, ACK_OK);
 			} else {
-				usart_write_char(USART_BT, ACK_BAD);
+				usart_putchar(USART_BT, ACK_BAD);
 			}
 			break;
 		case HANDLE_INPUT_PASS:
 			usart_comm_read_password();
 			if (!data_locked) {
-				usart_write_char(USART_BT, ACK_OK);
+				usart_putchar(USART_BT, ACK_OK);
 				secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 				break;
 			}
 			if (sd_access_unlock_drive(password_buf)) {
-				usart_write_char(USART_BT, ACK_OK);
+				usart_putchar(USART_BT, ACK_OK);
 			} else {
-				usart_write_char(USART_BT, ACK_BAD);
+				usart_putchar(USART_BT, ACK_BAD);
 			}
 			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			break;
@@ -138,16 +139,20 @@ static void process_data(void) {
 			usart_comm_read_password();
 			if (!security_validate_pass(password_buf)) {
 				secure_memset(password_buf, 0, MAX_PASS_LENGTH);
-				usart_write_char(USART_BT, ACK_BAD);
-				break;	
+				usart_putchar(USART_BT, ACK_BAD);
+				break;
 			}
 			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			sd_access_unmount_data();
+			usart_putchar(USART_BT, ACK_OK);
 			usart_comm_read_password();
 			security_write_pass(password_buf);
+			if (sd_access_unlock_drive(password_buf)) {
+				usart_putchar(USART_BT, ACK_OK);
+			} else {
+				usart_putchar(USART_BT, ACK_BAD);
+			}
 			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
-			sd_access_mount_data();
-			usart_write_char(USART_BT, ACK_OK);
 			break;
 		}
 		case HANDLE_ENCRYPT_QUERY:
@@ -160,16 +165,16 @@ static void process_data(void) {
 			break;
 		case HANDLE_RELOCK:
 			if (data_locked) {
-				usart_write_char(USART_BT, ACK_BAD);
+				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			}
 			sd_access_unmount_data();
 			sd_access_lock_data();
-			usart_write_char(USART_BT, ACK_OK);
+			usart_putchar(USART_BT, ACK_OK);
 			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			break;
 		default:
-			usart_write_char(USART_BT, ACK_BAD);
+			usart_putchar(USART_BT, ACK_BAD);
 	}
 }
 

@@ -51,7 +51,7 @@
 
 static bool main_b_msc_enable = false;
 static const uint32_t password[8] = {
-	0x31323334,
+	0x32323334,
 	0x35363738,
 	0x31323334,
 	0x35363738,

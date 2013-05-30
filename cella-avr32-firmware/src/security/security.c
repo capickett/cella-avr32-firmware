@@ -80,12 +80,12 @@ void security_write_config(encrypt_config_t *config_ptr)
 
 void security_get_user_hash(uint8_t **hash_ptr)
 {
-	*hash_ptr = user_data_st.hash;
+	hash_ptr = user_data_st.hash;
 }
 
 void security_get_user_salt(uint8_t **salt_ptr)
 {
-	*salt_ptr = user_data_st.salt;
+	salt_ptr = user_data_st.salt;
 }
 
 void security_get_user_config(encrypt_config_t **config_ptr)
