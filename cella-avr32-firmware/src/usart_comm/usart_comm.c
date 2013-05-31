@@ -20,6 +20,7 @@
 #define HANDLE_SET_PASS			'n'
 #define HANDLE_ENCRYPT_QUERY	'?'
 #define HANDLE_RELOCK			'l'
+#define HANDLE_RESET			'r''
 #define ACK_OK					'K'
 #define ACK_BAD					'~'
 #define ACK_UNLOCKED			'U'
@@ -93,13 +94,24 @@ static void process_data(void) {
 	switch (c) {
 		case USART_FAILURE:
 			break;
+		case HANDLE_RESET:
+			if (data_locked) {
+				usart_putchar(USART_BT, ACK_BAD);
+				break;
+			}
+			
+			// if (factory_reset()) {
+			// 	usart_putchar(USART_BT, ACK_OK);
+			// } else {
+			// 	usart_putchar(USART_BT, ACK_BAD);
+			// }
+			break;
 		case HANDLE_SET_CONFIG:
 			if (data_locked) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
-			} else {
-				usart_putchar(USART_BT, ACK_OK);
 			}
+
 			//sd_access_unmount_data();
 			if (usart_comm_read_config()) {
 				usart_putchar(USART_BT, ACK_OK);
@@ -112,14 +124,9 @@ static void process_data(void) {
 			if (data_locked) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
-			} else {
-				usart_putchar(USART_BT, ACK_OK);
 			}
-			if (usart_comm_write_config()) {
-				usart_putchar(USART_BT, ACK_OK);
-			} else {
-				usart_putchar(USART_BT, ACK_BAD);
-			}
+			usart_putchar(USART_BT, ACK_OK);
+			usart_comm_write_config();
 			break;
 		case HANDLE_INPUT_PASS:
 			usart_comm_read_password();
@@ -144,7 +151,6 @@ static void process_data(void) {
 			}
 			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			sd_access_unmount_data();
-			usart_putchar(USART_BT, ACK_OK);
 			usart_comm_read_password();
 			security_write_pass(password_buf);
 			if (sd_access_unlock_drive(password_buf)) {
@@ -165,7 +171,7 @@ static void process_data(void) {
 			break;
 		case HANDLE_RELOCK:
 			if (data_locked) {
-				usart_putchar(USART_BT, ACK_BAD);
+				usart_putchar(USART_BT, ACK_OK);
 				break;
 			}
 			sd_access_unmount_data();
