@@ -171,7 +171,7 @@ static void process_data(void) {
 			break;
 		case HANDLE_RELOCK:
 			if (data_locked) {
-				usart_putchar(USART_BT, ACK_BAD);
+				usart_putchar(USART_BT, ACK_OK);
 				break;
 			}
 			sd_access_unmount_data();
