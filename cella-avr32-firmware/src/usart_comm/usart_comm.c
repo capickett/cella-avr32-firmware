@@ -97,9 +97,8 @@ static void process_data(void) {
 			if (data_locked) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
-			} else {
-				usart_putchar(USART_BT, ACK_OK);
 			}
+
 			//sd_access_unmount_data();
 			if (usart_comm_read_config()) {
 				usart_putchar(USART_BT, ACK_OK);
@@ -111,15 +110,10 @@ static void process_data(void) {
 		case HANDLE_GET_CONFIG:
 			if (data_locked) {
 				usart_putchar(USART_BT, ACK_BAD);
-				int i;
-				for (i = 0; i < sizeof(encrypt_config_t); ++i) {
-					usart_putchar(USART_BT, '\0');
-				}
 				break;
-			} else {
-				usart_putchar(USART_BT, ACK_OK);
-				usart_comm_write_config();
 			}
+			usart_putchar(USART_BT, ACK_OK);
+			usart_comm_write_config();
 			break;
 		case HANDLE_INPUT_PASS:
 			usart_comm_read_password();
@@ -144,7 +138,6 @@ static void process_data(void) {
 			}
 			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			sd_access_unmount_data();
-			usart_putchar(USART_BT, ACK_OK);
 			usart_comm_read_password();
 			security_write_pass(password_buf);
 			if (sd_access_unlock_drive(password_buf)) {
