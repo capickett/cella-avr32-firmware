@@ -6,12 +6,12 @@
  */ 
 
 #include "compiler.h"
+#include "conf_access.h"
 
 #ifndef DATA_MOUNT_H_
 #define DATA_MOUNT_H_
 
-#define SD_SLOT_INDEX			0
-#define SD_LUN_INDEX			(SD_SLOT_INDEX + 1)
+#define SD_LUN_INDEX			LUN_ID_SD_MMC_0_MEM
 #define SD_BLOCKS_PER_ACCESS	16
 
 extern bool data_mounted;

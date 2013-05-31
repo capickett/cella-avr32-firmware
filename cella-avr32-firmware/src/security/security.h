@@ -35,7 +35,7 @@ bool security_validate_pass(uint8_t *password);
 
 void security_write_pass(uint8_t *password);
 
-void security_write_config(encrypt_config_t *config_ptr);
+void security_write_user_config(encrypt_config_t *config_ptr);
 
 void security_get_user_hash(uint8_t **hash_ptr);
 
@@ -44,5 +44,7 @@ void security_get_user_salt(uint8_t **salt_ptr);
 void security_get_user_config(encrypt_config_t **config_ptr);
 
 void *secure_memset(void *v, int c, size_t n);
+
+void hash_aes_key(uint8_t *password);
 
 #endif /* SECURITY_H_ */

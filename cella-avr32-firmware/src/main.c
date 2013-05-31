@@ -48,6 +48,7 @@
 #include "aes_dma.h"
 #include "sd_access.h"
 #include "entropy.h"
+#include "msc_comm.h"
 
 static bool main_b_msc_enable = false;
 static const uint32_t password[8] = {
@@ -83,10 +84,10 @@ int main(void)
 	usart_comm_init();
 	
 	/* First-time initialization only, not needed once password/config has been set */
-	security_write_pass((uint8_t *)password);
-	encrypt_config_t config;
-	config.encryption_level = 1;
-	security_write_config(&config);
+	//security_write_pass((uint8_t *)password);
+	//encrypt_config_t config;
+	//config.encryption_level = 1;
+	//security_write_user_config(&config);	
 	
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
@@ -100,6 +101,9 @@ int main(void)
 	// The main loop manages only the power mode
 	// because the USB management is done by interrupt
 	while (true) {
+		if (file_exists())
+			process_file();
+		
 		if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
 				sleepmgr_enter_sleep();

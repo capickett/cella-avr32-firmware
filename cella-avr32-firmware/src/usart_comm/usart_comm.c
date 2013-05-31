@@ -17,10 +17,12 @@
 #define HANDLE_SET_CONFIG		'c'
 #define HANDLE_GET_CONFIG		'g'
 #define HANDLE_INPUT_PASS		'p'
+#define HANDLE_UNLOCK			'k'
 #define HANDLE_SET_PASS			'n'
 #define HANDLE_ENCRYPT_QUERY	'?'
 #define HANDLE_RELOCK			'l'
-#define HANDLE_RESET			'r''
+#define HANDLE_RESET			'r'
+#define HANDLE_UNMOUNT			'u'
 #define ACK_OK					'K'
 #define ACK_BAD					'~'
 #define ACK_UNLOCKED			'U'
@@ -100,25 +102,22 @@ static void process_data(void) {
 				break;
 			}
 			
-			// if (factory_reset()) {
-			// 	usart_putchar(USART_BT, ACK_OK);
-			// } else {
-			// 	usart_putchar(USART_BT, ACK_BAD);
-			// }
+			if (factory_reset()) {
+				usart_putchar(USART_BT, ACK_OK);
+			} else {
+				usart_putchar(USART_BT, ACK_BAD);
+			}
 			break;
 		case HANDLE_SET_CONFIG:
 			if (data_locked) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			}
-
-			//sd_access_unmount_data();
 			if (usart_comm_read_config()) {
 				usart_putchar(USART_BT, ACK_OK);
 			} else {
 				usart_putchar(USART_BT, ACK_BAD);
 			}
-			//sd_access_mount_data();
 			break;
 		case HANDLE_GET_CONFIG:
 			if (data_locked) {
@@ -131,34 +130,37 @@ static void process_data(void) {
 		case HANDLE_INPUT_PASS:
 			usart_comm_read_password();
 			if (!data_locked) {
-				usart_putchar(USART_BT, ACK_OK);
 				secure_memset(password_buf, 0, MAX_PASS_LENGTH);
+				usart_putchar(USART_BT, ACK_OK);
 				break;
 			}
-			if (sd_access_unlock_drive(password_buf)) {
+			if (security_validate_pass(password_buf)) {
+				sd_access_unlock_data();
 				usart_putchar(USART_BT, ACK_OK);
 			} else {
 				usart_putchar(USART_BT, ACK_BAD);
 			}
 			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
 			break;
-		case HANDLE_SET_PASS: {
-			usart_comm_read_password();
-			if (!security_validate_pass(password_buf)) {
-				secure_memset(password_buf, 0, MAX_PASS_LENGTH);
-				usart_putchar(USART_BT, ACK_BAD);
-				break;
-			}
-			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
-			sd_access_unmount_data();
-			usart_comm_read_password();
-			security_write_pass(password_buf);
-			if (sd_access_unlock_drive(password_buf)) {
+		case HANDLE_UNLOCK:
+			if (!data_locked) {
+				sd_access_mount_data();
 				usart_putchar(USART_BT, ACK_OK);
+				break;
 			} else {
 				usart_putchar(USART_BT, ACK_BAD);
 			}
+			break;
+		case HANDLE_SET_PASS: {
+			if (data_locked) {
+				usart_putchar(USART_BT, ACK_BAD);
+				break;
+			}
+			usart_comm_read_password();
+			security_write_pass(password_buf);
+			hash_aes_key(password_buf);
 			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
+			usart_putchar(USART_BT, ACK_OK);
 			break;
 		}
 		case HANDLE_ENCRYPT_QUERY:
@@ -168,6 +170,10 @@ static void process_data(void) {
 			} else {
 				usart_putchar(USART_BT, ACK_UNLOCKED);
 			}
+			break;
+		case HANDLE_UNMOUNT:
+			sd_access_unmount_data();
+			usart_putchar(USART_BT, ACK_OK);
 			break;
 		case HANDLE_RELOCK:
 			if (data_locked) {
