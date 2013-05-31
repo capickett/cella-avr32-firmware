@@ -20,6 +20,7 @@
 #define HANDLE_SET_PASS			'n'
 #define HANDLE_ENCRYPT_QUERY	'?'
 #define HANDLE_RELOCK			'l'
+#define HANDLE_RESET			'r''
 #define ACK_OK					'K'
 #define ACK_BAD					'~'
 #define ACK_UNLOCKED			'U'
@@ -92,6 +93,18 @@ static void process_data(void) {
 
 	switch (c) {
 		case USART_FAILURE:
+			break;
+		case HANDLE_RESET:
+			if (data_locked) {
+				usart_putchar(USART_BT, ACK_BAD);
+				break;
+			}
+			
+			// if (factory_reset()) {
+			// 	usart_putchar(USART_BT, ACK_OK);
+			// } else {
+			// 	usart_putchar(USART_BT, ACK_BAD);
+			// }
 			break;
 		case HANDLE_SET_CONFIG:
 			if (data_locked) {
