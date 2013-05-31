@@ -120,11 +120,11 @@ getconfig() {
 # Lock drive, cleanup temporary files, and exit properly #
 #--------------------------------------------------------#
 graceful_exit() {
-    rm -f "$RESFILE"
+    rm -f "$RESFILE" "$LOCKFILE" "$CMDFILE"
 
-    # if we trap a signal in silent mode, the terminal gets stuck
-    # in silent mode. This hack ensures that doesn't happen
-    echo "uglyhack" | read
+    # in case trap was caught while terminal output was suppressed
+    stty echo
+
     exit 0
 }
 
