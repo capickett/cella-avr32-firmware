@@ -111,14 +111,14 @@ static void process_data(void) {
 		case HANDLE_GET_CONFIG:
 			if (data_locked) {
 				usart_putchar(USART_BT, ACK_BAD);
+				int i;
+				for (i = 0; i < sizeof(encrypt_config_t); ++i) {
+					usart_putchar(USART_BT, '\0');
+				}
 				break;
 			} else {
 				usart_putchar(USART_BT, ACK_OK);
-			}
-			if (usart_comm_write_config()) {
-				usart_putchar(USART_BT, ACK_OK);
-			} else {
-				usart_putchar(USART_BT, ACK_BAD);
+				usart_comm_write_config();
 			}
 			break;
 		case HANDLE_INPUT_PASS:
