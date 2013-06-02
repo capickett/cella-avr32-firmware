@@ -101,7 +101,7 @@ static void process_data(void) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			}
-			if (factory_reset()) {
+			if (sd_access_factory_reset()) {
 				usart_putchar(USART_BT, ACK_OK);
 			} else {
 				usart_putchar(USART_BT, ACK_BAD);

@@ -15,7 +15,8 @@
 static int fd;
 
 void msc_comm_init(void) {
-	b_fsaccess_init();
+	
+	// b_fsaccess_init();
 	const uint8_t _MEM_TYPE_SLOW_ script_name[17] = 
 		{'.', 'c', 'e', 'l', 'l', 'a', '_', 'u', 'n', 'l', 'o', 'c', 'k', '.', 's', 'h', 0};
 	
@@ -25,9 +26,9 @@ void msc_comm_init(void) {
 		// TODO: get script into static array
 		uint8_t _MEM_TYPE_SLOW_* script_buf;
 		uint16_t script_size;
-		if (nav_file_create( (const FS_STRING) script_name ) && file_open(FOPEN_MODE_W)) {
-			file_write_buf(script_buf, script_size);
-		}
+		//if (nav_file_create( (const FS_STRING) script_name ) && file_open(FOPEN_MODE_W)) {
+		//	file_write_buf(script_buf, script_size);
+		//}
 		file_close();
 	}
 }

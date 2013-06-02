@@ -502,11 +502,11 @@ bool  fat_select_filesystem( uint8_t u8_fat_type , bool b_MBR )
    //** Verify the FAT type chosen
    if(FS_FORMAT_FAT == u8_fat_type )
    {
-      if( (((uint32_t)2*1024*1024)/FS_512B) >= fs_s_u32_size_partition  )
-      {
-         fs_g_status = FS_ERR_DEVICE_TOO_SMALL;    // The disk size is not supported
-         return false;
-      }
+      //if( (((uint32_t)2*1024*1024)/FS_512B) >= fs_s_u32_size_partition  )
+      //{
+         //fs_g_status = FS_ERR_DEVICE_TOO_SMALL;    // The disk size is not supported
+         //return false;
+      //}
       if( (((uint32_t)15*1024*1024)/FS_512B) >= fs_s_u32_size_partition  )
       {
          // FAT 12 format
