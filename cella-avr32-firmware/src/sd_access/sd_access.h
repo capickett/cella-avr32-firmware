@@ -31,4 +31,6 @@ bool sd_access_unlock_drive(uint8_t* passwd);
 
 uint8_t sd_change_encryption(uint8_t slot, bool encrypt, bool change_key, uint8_t *old_passwd, uint8_t *new_passwd);
 
+bool sd_access_factory_reset(void);
+
 #endif /* DATA_MOUNT_H_ */

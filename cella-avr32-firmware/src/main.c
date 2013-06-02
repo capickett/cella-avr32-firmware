@@ -79,6 +79,7 @@ int main(void)
 	sd_access_init();
 	aes_init();
 	entropy_init();
+	msc_comm_init();
 		
 	/* USART SETUP */
 	usart_comm_init();

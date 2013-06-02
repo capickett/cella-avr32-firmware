@@ -17,7 +17,6 @@
 
 bool data_mounted;
 bool data_locked;
-static uint8_t hash_buf_cipher[HASH_LENGTH];
 static uint8_t src_buf[SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS];
 static uint8_t dest_buf[SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS];
 static uint8_t old_hash_cipher_key[HASH_LENGTH];
@@ -56,6 +55,11 @@ bool sd_access_unlock_drive(uint8_t* passwd) {
 	} else {
 		return false;
 	}
+}
+
+bool sd_access_factory_reset()
+{
+	return true;
 }
 
 /* Changes the encryption level of the drive.
