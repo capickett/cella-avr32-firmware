@@ -57,9 +57,12 @@ bool sd_access_unlock_drive(uint8_t* passwd) {
 	}
 }
 
-bool sd_access_factory_reset()
+void sd_access_factory_reset(bool first_run)
 {
-	return true;
+	security_password_reset();
+	security_user_config_reset();
+	if (first_run)
+		security_flash_write_factory_reset(false);
 }
 
 /* Changes the encryption level of the drive.
@@ -70,7 +73,7 @@ uint8_t sd_change_encryption(uint8_t slot, bool encrypt, bool change_key, uint8_
 	uint32_t i, nb_blocks;
 	encrypt_config_t *config_ptr = NULL;
 	
-	security_get_user_config(&config_ptr);
+	security_get_config(&config_ptr);
 	if ((encrypt == config_ptr->encryption_level) && !change_key)
 		return CTRL_GOOD;
 	

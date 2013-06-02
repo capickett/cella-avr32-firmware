@@ -1140,6 +1140,9 @@
     <None Include="src\config\conf_explorer.h">
       <SubType>compile</SubType>
     </None>
+    <Compile Include="src\config\conf_factory.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\entropy\entropy.c">
       <SubType>compile</SubType>
     </Compile>

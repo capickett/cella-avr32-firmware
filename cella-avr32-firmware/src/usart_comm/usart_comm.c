@@ -54,7 +54,7 @@ static bool usart_comm_read_config(void) {
 	int i, max;
 	uint8_t config_string[sizeof(encrypt_config_t)];
 	encrypt_config_t *config_ptr = NULL;
-	security_get_user_config(&config_ptr);
+	security_get_config(&config_ptr);
 	
 	max = sizeof(encrypt_config_t);
 	for (i = 0; i < max; ++i) {
@@ -66,14 +66,14 @@ static bool usart_comm_read_config(void) {
 		return false;
 	
 	if (config_ptr->encryption_level != encrypt_level) {
-		flashc_memcpy(config_ptr, (encrypt_config_t *)config_string, sizeof(encrypt_config_t), true);	
+		security_flash_write_config((encrypt_config_t *)config_string);	
 	}			
 	return true;
 }
 
 static bool usart_comm_write_config(void) {
 	encrypt_config_t *config_ptr = NULL;
-	security_get_user_config(&config_ptr);
+	security_get_config(&config_ptr);
 	uint8_t *config_byte_ptr = (uint8_t *)config_ptr;
 	int i;
 	for (i = 0; i < sizeof(*config_ptr); ++i) {
@@ -101,11 +101,8 @@ static void process_data(void) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			}
-			if (sd_access_factory_reset()) {
-				usart_putchar(USART_BT, ACK_OK);
-			} else {
-				usart_putchar(USART_BT, ACK_BAD);
-			}
+			sd_access_factory_reset(false);
+			usart_putchar(USART_BT, ACK_OK);
 			break;
 		case HANDLE_SET_CONFIG:
 			if (data_locked) {
@@ -129,7 +126,7 @@ static void process_data(void) {
 		case HANDLE_INPUT_PASS:
 			usart_comm_read_password();
 			if (!data_locked) {
-				secure_memset(password_buf, 0, MAX_PASS_LENGTH);
+				security_memset(password_buf, 0, MAX_PASS_LENGTH);
 				usart_putchar(USART_BT, ACK_OK);
 				break;
 			}
@@ -139,7 +136,7 @@ static void process_data(void) {
 			} else {
 				usart_putchar(USART_BT, ACK_BAD);
 			}
-			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
+			security_memset(password_buf, 0, MAX_PASS_LENGTH);
 			break;
 		case HANDLE_UNLOCK:
 			if (!data_locked) {
@@ -158,7 +155,7 @@ static void process_data(void) {
 			usart_comm_read_password();
 			security_write_pass(password_buf);
 			hash_aes_key(password_buf);
-			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
+			security_memset(password_buf, 0, MAX_PASS_LENGTH);
 			usart_putchar(USART_BT, ACK_OK);
 			break;
 		}
@@ -182,7 +179,7 @@ static void process_data(void) {
 			sd_access_unmount_data();
 			sd_access_lock_data();
 			usart_putchar(USART_BT, ACK_OK);
-			secure_memset(password_buf, 0, MAX_PASS_LENGTH);
+			security_memset(password_buf, 0, MAX_PASS_LENGTH);
 			break;
 		default:
 			usart_putchar(USART_BT, ACK_BAD);

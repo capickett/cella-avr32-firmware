@@ -63,7 +63,7 @@ void process_file(void) {
 		}
 		case 'g': {
 			encrypt_config_t *config;
-			security_get_user_config(&config);
+			security_get_config(&config);
 			write(res, &(config->encryption_level), 1);
 			break;
 		}
@@ -72,7 +72,7 @@ void process_file(void) {
 			uint8_t encryption_level;
 			read(cmd, &encryption_level, 1);
 			config.encryption_level = encryption_level;
-			security_write_user_config(&config);
+			security_flash_write_config(&config);
 			break;
 		}
 		case 'n': {
