@@ -7,6 +7,7 @@
 
 #include <asf.h>
 #include <string.h>
+#include "conf_security.h"
 #include "usart_comm.h"
 #include "security.h"
 #include "sd_access.h"
@@ -43,7 +44,7 @@ static usart_serial_options_t usart_options = {
 	.channelmode = CONFIG_USART_BT_SERIAL_MODE
 };
 
-static void usart_comm_read_password(void) {
+static void usart_comm_read_string(void) {
 	int i;
 	for (i = 0; i < MAX_PASS_LENGTH; ++i) {
 		password_buf[i] = usart_getchar(USART_BT);
@@ -62,7 +63,7 @@ static bool usart_comm_read_config(void) {
 	}
 	
 	uint8_t encrypt_level = ((encrypt_config_t *)config_string)->encryption_level;
-	if (encrypt_level != !!encrypt_level)
+	if (encrypt_level > MAX_FACTOR || encrypt_level < MIN_FACTOR)
 		return false;
 	
 	if (config_ptr->encryption_level != encrypt_level) {
@@ -124,7 +125,7 @@ static void process_data(void) {
 			usart_comm_write_config();
 			break;
 		case HANDLE_INPUT_PASS:
-			usart_comm_read_password();
+			usart_comm_read_string();
 			if (!data_locked) {
 				security_memset(password_buf, 0, MAX_PASS_LENGTH);
 				usart_putchar(USART_BT, ACK_OK);
@@ -152,7 +153,7 @@ static void process_data(void) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			}
-			usart_comm_read_password();
+			usart_comm_read_string();
 			security_write_pass(password_buf);
 			hash_aes_key(password_buf);
 			security_memset(password_buf, 0, MAX_PASS_LENGTH);

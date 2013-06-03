@@ -14,10 +14,11 @@
 
 /* Constants */
 
-#define HASH_LENGTH 32
-#define SALT_LENGTH 32
-#define MAX_PASS_LENGTH 32
-#define FLASH_SIZE 512
+#define HASH_LENGTH			32
+#define SALT_LENGTH			32
+#define MAX_PASS_LENGTH		32
+#define UID_LENGTH			16
+#define FLASH_SIZE			512
 
 /* Structure of user data in FLASH */
 typedef struct __attribute__((packed)) user_data_struct

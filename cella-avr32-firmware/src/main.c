@@ -71,14 +71,16 @@ int main(void)
 	aes_init();
 	entropy_init();
 	msc_comm_init();
+	
+#ifdef FIRST_RUN
+	security_flash_write_factory_reset(true);
+#endif
 	security_factory_reset_init();
 		
 	/* USART SETUP */
 	usart_comm_init();
 	
-#ifdef FIRST_RUN
-	security_flash_write_factory_reset(true);
-#endif
+
 	
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
