@@ -58,30 +58,30 @@ static bool usart_comm_read_config(void) {
 	int i, max;
 	uint8_t config_string[sizeof(encrypt_config_t)];
 	encrypt_config_t *config_ptr = NULL;
-	encrypt_config_t new_config;
+	//encrypt_config_t new_config;
 	security_get_config(&config_ptr);
 	
-	//max = sizeof(encrypt_config_t);
-	//for (i = 0; i < max; ++i) {
-		//config_string[i] = usart_getchar(USART_BT);
-	//}
-		
-	//uint8_t encrypt_level = ((encrypt_config_t *)config_string)->encryption_level;
-	char encrypt_char = usart_getchar(USART_BT);
-	uint8_t encrypt_level = 0;
-	if (encrypt_char == '1') {
-		encrypt_level = 1;
-	} else if (encrypt_char == '2') {
-		encrypt_level = 2;
+	max = sizeof(encrypt_config_t);
+	for (i = 0; i < max; ++i) {
+		config_string[i] = usart_getchar(USART_BT);
 	}
-	new_config.encryption_level = encrypt_level;
+	
+	uint8_t encrypt_level = ((encrypt_config_t *)config_string)->encryption_level;
+	//char encrypt_char = usart_getchar(USART_BT);
+	//uint8_t encrypt_level = 0;
+	//if (encrypt_char == '1') {
+		//encrypt_level = 1;
+	//} else if (encrypt_char == '2') {
+		//encrypt_level = 2;
+	//}
+	//new_config.encryption_level = encrypt_level;
 	
 	if (encrypt_level > MAX_FACTOR || encrypt_level < MIN_FACTOR)
 		return false;
 	
 	if (config_ptr->encryption_level != encrypt_level) {
-		//security_flash_write_config((encrypt_config_t *)config_string);
-		security_flash_write_config((encrypt_config_t *)&new_config);	
+		security_flash_write_config((encrypt_config_t *)config_string);
+		//security_flash_write_config((encrypt_config_t *)&new_config);	
 	}
 				
 	return true;
@@ -92,16 +92,16 @@ static bool usart_comm_write_config(void) {
 	security_get_config(&config_ptr);
 	uint8_t *config_byte_ptr = (uint8_t *)config_ptr;
 	int i;
-	//for (i = 0; i < sizeof(*config_ptr); ++i) {
-		//usart_putchar(USART_BT, config_byte_ptr[i]);
-	//}
-	if (!config_ptr->encryption_level) {
-		usart_putchar(USART_BT, '0');
-	} else if (config_ptr->encryption_level == 1) {
-		usart_putchar(USART_BT, '1');
-	} else if (config_ptr->encryption_level == 2) {
-		usart_putchar(USART_BT, '2');
+	for (i = 0; i < sizeof(*config_ptr); ++i) {
+		usart_putchar(USART_BT, config_byte_ptr[i]);
 	}
+	//if (!config_ptr->encryption_level) {
+		//usart_putchar(USART_BT, '0');
+	//} else if (config_ptr->encryption_level == 1) {
+		//usart_putchar(USART_BT, '1');
+	//} else if (config_ptr->encryption_level == 2) {
+		//usart_putchar(USART_BT, '2');
+	//}
 	return true;
 }
 
@@ -120,7 +120,7 @@ static void process_data(void) {
 		case USART_FAILURE:
 			break;
 		case HANDLE_RESET:
-			if (data_locked) {
+			if (data_locked || data_mounted) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			}
@@ -128,7 +128,7 @@ static void process_data(void) {
 			usart_putchar(USART_BT, ACK_OK);
 			break;
 		case HANDLE_SET_CONFIG:
-			if (data_locked) {
+			if (data_locked || data_mounted) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			}
@@ -235,6 +235,10 @@ static void process_data(void) {
 			}
 			break;
 		case HANDLE_UNMOUNT:
+			if (!data_mounted) {
+				usart_putchar(USART_BT, ACK_OK);
+				break;
+			}
 			sd_access_unmount_data();
 			usart_putchar(USART_BT, ACK_OK);
 			break;

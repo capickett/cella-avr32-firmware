@@ -9,7 +9,7 @@
 #ifndef CONF_FACTORY_H_
 #define CONF_FACTORY_H_
 
-// #define FIRST_RUN
+//#define FIRST_RUN
 #define DEFAULT_ENCRYPTION 1
 
 #endif /* CONF_FACTORY_H_ */
