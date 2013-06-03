@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include "sd_access.h"
+#include "conf_factory.h"
 #include "sd_mmc.h"
 #include "aes_dma.h"
 #include "ctrl_access.h"
@@ -59,7 +60,7 @@ bool sd_access_unlock_drive(uint8_t* passwd) {
 
 void sd_access_factory_reset(bool first_run)
 {
-	security_password_reset();
+	security_password_reset(DEFAULT_ENCRYPTION, NULL);
 	security_user_config_reset();
 	if (first_run)
 		security_flash_write_factory_reset(false);

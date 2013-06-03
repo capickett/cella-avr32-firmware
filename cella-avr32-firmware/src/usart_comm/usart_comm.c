@@ -8,6 +8,7 @@
 #include <asf.h>
 #include <string.h>
 #include "conf_security.h"
+#include "conf_factory.h"
 #include "usart_comm.h"
 #include "security.h"
 #include "sd_access.h"
@@ -30,6 +31,8 @@
 #define ACK_LOCKED				'L'
 	
 static uint8_t password_buf[MAX_PASS_LENGTH];
+static uint8_t uuid_buf[UUID_LENGTH];
+static uint8_t multi_buf[MAX_PASS_LENGTH + UUID_LENGTH];
 
 static const gpio_map_t USART_BT_GPIO_MAP = {
 	{ USART_BT_RX_PIN, USART_BT_RX_FUNCTION },
@@ -44,10 +47,10 @@ static usart_serial_options_t usart_options = {
 	.channelmode = CONFIG_USART_BT_SERIAL_MODE
 };
 
-static void usart_comm_read_string(void) {
+static void usart_comm_read_string(uint8_t length, uint8_t *buf) {
 	int i;
-	for (i = 0; i < MAX_PASS_LENGTH; ++i) {
-		password_buf[i] = usart_getchar(USART_BT);
+	for (i = 0; i < length; ++i) {
+		buf[i] = usart_getchar(USART_BT);
 	}
 }
 
@@ -55,20 +58,32 @@ static bool usart_comm_read_config(void) {
 	int i, max;
 	uint8_t config_string[sizeof(encrypt_config_t)];
 	encrypt_config_t *config_ptr = NULL;
+	encrypt_config_t new_config;
 	security_get_config(&config_ptr);
 	
-	max = sizeof(encrypt_config_t);
-	for (i = 0; i < max; ++i) {
-		config_string[i] = usart_getchar(USART_BT);
+	//max = sizeof(encrypt_config_t);
+	//for (i = 0; i < max; ++i) {
+		//config_string[i] = usart_getchar(USART_BT);
+	//}
+		
+	//uint8_t encrypt_level = ((encrypt_config_t *)config_string)->encryption_level;
+	char encrypt_char = usart_getchar(USART_BT);
+	uint8_t encrypt_level = 0;
+	if (encrypt_char == '1') {
+		encrypt_level = 1;
+	} else if (encrypt_char == '2') {
+		encrypt_level = 2;
 	}
+	new_config.encryption_level = encrypt_level;
 	
-	uint8_t encrypt_level = ((encrypt_config_t *)config_string)->encryption_level;
 	if (encrypt_level > MAX_FACTOR || encrypt_level < MIN_FACTOR)
 		return false;
 	
 	if (config_ptr->encryption_level != encrypt_level) {
-		security_flash_write_config((encrypt_config_t *)config_string);	
-	}			
+		//security_flash_write_config((encrypt_config_t *)config_string);
+		security_flash_write_config((encrypt_config_t *)&new_config);	
+	}
+				
 	return true;
 }
 
@@ -77,8 +92,15 @@ static bool usart_comm_write_config(void) {
 	security_get_config(&config_ptr);
 	uint8_t *config_byte_ptr = (uint8_t *)config_ptr;
 	int i;
-	for (i = 0; i < sizeof(*config_ptr); ++i) {
-		usart_putchar(USART_BT, config_byte_ptr[i]);
+	//for (i = 0; i < sizeof(*config_ptr); ++i) {
+		//usart_putchar(USART_BT, config_byte_ptr[i]);
+	//}
+	if (!config_ptr->encryption_level) {
+		usart_putchar(USART_BT, '0');
+	} else if (config_ptr->encryption_level == 1) {
+		usart_putchar(USART_BT, '1');
+	} else if (config_ptr->encryption_level == 2) {
+		usart_putchar(USART_BT, '2');
 	}
 	return true;
 }
@@ -111,6 +133,12 @@ static void process_data(void) {
 				break;
 			}
 			if (usart_comm_read_config()) {
+				encrypt_config_t *config_ptr = NULL;
+				security_get_config(&config_ptr);
+				if (config_ptr->encryption_level == 2)
+					usart_comm_read_string(UUID_LENGTH, uuid_buf);
+				security_password_reset(config_ptr->encryption_level, uuid_buf);
+				security_memset(uuid_buf, 0, UUID_LENGTH);
 				usart_putchar(USART_BT, ACK_OK);
 			} else {
 				usart_putchar(USART_BT, ACK_BAD);
@@ -121,23 +149,44 @@ static void process_data(void) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			}
-			usart_putchar(USART_BT, ACK_OK);
 			usart_comm_write_config();
+			usart_putchar(USART_BT, ACK_OK);
 			break;
 		case HANDLE_INPUT_PASS:
-			usart_comm_read_string();
 			if (!data_locked) {
 				security_memset(password_buf, 0, MAX_PASS_LENGTH);
 				usart_putchar(USART_BT, ACK_OK);
 				break;
 			}
-			if (security_validate_pass(password_buf)) {
+			encrypt_config_t *config_ptr = NULL;
+			security_get_config(&config_ptr);
+			if (config_ptr->encryption_level == 0) {
 				sd_access_unlock_data();
-				usart_putchar(USART_BT, ACK_OK);
+				break;
+			} else if (config_ptr->encryption_level == 1) {
+				usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
+				if (security_validate_pass(password_buf, MAX_PASS_LENGTH)) {
+					usart_putchar(USART_BT, ACK_OK);
+				} else {
+					usart_putchar(USART_BT, ACK_BAD);
+				}
+			} else if (config_ptr->encryption_level == 2) {
+				usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
+				usart_comm_read_string(UUID_LENGTH, uuid_buf);
+				memcpy(multi_buf, uuid_buf, UUID_LENGTH);
+				memcpy(multi_buf + UUID_LENGTH, password_buf, MAX_PASS_LENGTH);
+				if (security_validate_pass(multi_buf, MAX_PASS_LENGTH + UUID_LENGTH)) {
+					usart_putchar(USART_BT, ACK_OK);
+				} else {
+					usart_putchar(USART_BT, ACK_BAD);
+				}
 			} else {
 				usart_putchar(USART_BT, ACK_BAD);
+				break;
 			}
 			security_memset(password_buf, 0, MAX_PASS_LENGTH);
+			security_memset(uuid_buf, 0, UUID_LENGTH);
+			security_memset(multi_buf, 0, MAX_PASS_LENGTH + UUID_LENGTH);
 			break;
 		case HANDLE_UNLOCK:
 			if (!data_locked) {
@@ -149,14 +198,31 @@ static void process_data(void) {
 			}
 			break;
 		case HANDLE_SET_PASS: {
-			if (data_locked) {
+			if (data_locked || data_mounted) {
 				usart_putchar(USART_BT, ACK_BAD);
 				break;
 			}
-			usart_comm_read_string();
-			security_write_pass(password_buf);
-			hash_aes_key(password_buf);
-			security_memset(password_buf, 0, MAX_PASS_LENGTH);
+			encrypt_config_t *config_ptr = NULL;
+			security_get_config(&config_ptr);
+			if (config_ptr->encryption_level < 2) {
+				usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
+				security_write_pass(password_buf, MAX_PASS_LENGTH);
+				security_hash_aes_key(password_buf, MAX_PASS_LENGTH);
+				security_memset(password_buf, 0, MAX_PASS_LENGTH);
+			} else if (config_ptr->encryption_level == 2) {
+				usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
+				usart_comm_read_string(UUID_LENGTH, uuid_buf);
+				memcpy(multi_buf, uuid_buf, UUID_LENGTH);
+				memcpy(multi_buf + UUID_LENGTH, password_buf, MAX_PASS_LENGTH);
+				security_write_pass(multi_buf, MAX_PASS_LENGTH + UUID_LENGTH);
+				security_hash_aes_key(multi_buf, MAX_PASS_LENGTH + UUID_LENGTH);
+				security_memset(password_buf, 0, MAX_PASS_LENGTH);
+				security_memset(uuid_buf, 0, UUID_LENGTH);
+				security_memset(multi_buf, 0, MAX_PASS_LENGTH + UUID_LENGTH);
+			} else {
+				usart_putchar(USART_BT, ACK_BAD);
+				break;
+			}
 			usart_putchar(USART_BT, ACK_OK);
 			break;
 		}

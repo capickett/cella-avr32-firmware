@@ -54,7 +54,7 @@ void process_file(void) {
 			read(cmd, pass_buf, MAX_PASS_LENGTH);
 
 			uint8_t resp;
-			if (security_validate_pass(pass_buf))
+			if (security_validate_pass(pass_buf, MAX_PASS_LENGTH))
 				resp = 'K';
 			else
 				resp = '~';
@@ -79,9 +79,9 @@ void process_file(void) {
 			uint8_t pass_buf[MAX_PASS_LENGTH];
 			read(cmd, pass_buf, MAX_PASS_LENGTH);
 			char resp;
-			if (security_validate_pass(pass_buf)) {
+			if (security_validate_pass(pass_buf, MAX_PASS_LENGTH)) {
 				read(cmd, pass_buf, MAX_PASS_LENGTH);
-				security_write_pass(pass_buf);
+				security_write_pass(pass_buf, MAX_PASS_LENGTH);
 				resp = 'K';
 			} else {
 				resp = '~';
