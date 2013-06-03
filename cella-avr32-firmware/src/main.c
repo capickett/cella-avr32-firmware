@@ -42,24 +42,16 @@
  */
 #include <asf.h>
 #include "conf_usb.h"
+#include "conf_factory.h"
 #include "ui.h"
 #include "security.h"
 #include "usart_comm.h"
 #include "aes_dma.h"
 #include "sd_access.h"
 #include "entropy.h"
+#include "msc_comm.h"
 
 static bool main_b_msc_enable = false;
-static const uint32_t password[8] = {
-	0x32323334,
-	0x35363738,
-	0x31323334,
-	0x35363738,
-	0x31323334,
-	0x35363738,
-	0x31323334,
-	0x35363738
-};
 
 /*! \brief Main function. Execution starts here.
  */
@@ -78,15 +70,17 @@ int main(void)
 	sd_access_init();
 	aes_init();
 	entropy_init();
+	msc_comm_init();
+	
+#ifdef FIRST_RUN
+	security_flash_write_factory_reset(true);
+#endif
+	security_factory_reset_init();
 		
 	/* USART SETUP */
 	usart_comm_init();
 	
-	/* First-time initialization only, not needed once password/config has been set */
-	security_write_pass((uint8_t *)password);
-	encrypt_config_t config;
-	config.encryption_level = 1;
-	security_write_config(&config);
+
 	
 	// Start USB stack to authorize VBus monitoring
 	udc_start();
@@ -100,6 +94,9 @@ int main(void)
 	// The main loop manages only the power mode
 	// because the USB management is done by interrupt
 	while (true) {
+		if (file_exists())
+			process_file();
+		
 		if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
 				sleepmgr_enter_sleep();

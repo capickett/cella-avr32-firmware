@@ -164,7 +164,7 @@ uint8_t aes_buf_0[SD_MMC_BLOCK_SIZE];
 Ctrl_status sd_mmc_usb_read_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 {
 	encrypt_config_t *config_ptr = NULL;
-	security_get_user_config(&config_ptr);
+	security_get_config(&config_ptr);
 	//bool b_first_step = true;
 	uint16_t nb_step;
 
@@ -206,7 +206,7 @@ Ctrl_status sd_mmc_usb_read_10_1(uint32_t addr, uint16_t nb_sector)
 Ctrl_status sd_mmc_usb_write_10(uint8_t slot, uint32_t addr, uint16_t nb_sector)
 {
 	encrypt_config_t *config_ptr =NULL;
-	security_get_user_config(&config_ptr);
+	security_get_config(&config_ptr);
 	//bool b_first_step = true;
 	uint16_t nb_step;
 

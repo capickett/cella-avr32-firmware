@@ -71,6 +71,18 @@
 // From module: Delay routines
 #include <delay.h>
 
+// From module: Memory Control Access Interface
+#include <ctrl_access.h>
+
+// From module: FAT file system
+#include <fat.h>
+#include <file.h>
+#include <fs_com.h>
+#include <navigation.h>
+
+// From module: FAT file system with POSIX API support
+#include <fsaccess.h>
+
 // From module: FLASHC - Flash Controller
 #include <flashc.h>
 
@@ -91,9 +103,6 @@
 
 // From module: MCI - MultiMedia Card Interface
 #include <mci.h>
-
-// From module: Memory Control Access Interface
-#include <ctrl_access.h>
 
 // From module: PM Power Manager- UC3 A0/A1/A3/A4/B0/B1 implementation
 #include <power_clocks_lib.h>

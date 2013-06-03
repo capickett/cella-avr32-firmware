@@ -62,14 +62,14 @@
  */
 //! @{
 
-#define FOSC32          32768                                 //!< Osc32 frequency: Hz.
-#define OSC32_STARTUP   AVR32_PM_OSCCTRL32_STARTUP_8192_RCOSC //!< Osc32 startup time: RCOsc periods.
+//#define FOSC32          32768                                 //!< Osc32 frequency: Hz.
+//#define OSC32_STARTUP   AVR32_PM_OSCCTRL32_STARTUP_8192_RCOSC //!< Osc32 startup time: RCOsc periods.
 
 #define FOSC0           12000000                              //!< Osc0 frequency: Hz.
 #define OSC0_STARTUP    AVR32_PM_OSCCTRL0_STARTUP_2048_RCOSC  //!< Osc0 startup time: RCOsc periods.
 
-#define FOSC1           11289600                              //!< Osc1 frequency: Hz.
-#define OSC1_STARTUP    AVR32_PM_OSCCTRL1_STARTUP_2048_RCOSC  //!< Osc1 startup time: RCOsc periods.
+//#define FOSC1           11289600                              //!< Osc1 frequency: Hz.
+//#define OSC1_STARTUP    AVR32_PM_OSCCTRL1_STARTUP_2048_RCOSC  //!< Osc1 startup time: RCOsc periods.
 
 //! @}
 
@@ -77,12 +77,12 @@
 #define BOARD_OSC0_HZ           12000000
 #define BOARD_OSC0_STARTUP_US   17000
 #define BOARD_OSC0_IS_XTAL      true
-#define BOARD_OSC1_HZ           11289600
-#define BOARD_OSC1_STARTUP_US   17000
-#define BOARD_OSC1_IS_XTAL      true
-#define BOARD_OSC32_HZ          32768
-#define BOARD_OSC32_STARTUP_US  71000
-#define BOARD_OSC32_IS_XTAL     true
+//#define BOARD_OSC1_HZ           11289600
+//#define BOARD_OSC1_STARTUP_US   17000
+//#define BOARD_OSC1_IS_XTAL      true
+//#define BOARD_OSC32_HZ          32768
+//#define BOARD_OSC32_STARTUP_US  71000
+//#define BOARD_OSC32_IS_XTAL     true
 
 
 /*! \name SDRAM Definitions
@@ -216,7 +216,7 @@
 #define SD_MMC_MCI_MEM_CNT                 2
 
 //! 8-bits connector pin
-#define SD_MMC_MCI_SLOT_0_SIZE             8
+#define SD_MMC_MCI_SLOT_0_SIZE             4
 #define SD_MMC_MCI_SLOT_0_DATA0_PIN        SD_SLOT_8BITS_DATA0_PIN
 #define SD_MMC_MCI_SLOT_0_DATA3_PIN        SD_SLOT_8BITS_DATA3_PIN
 #define SD_SLOT_8BITS                      0
@@ -246,8 +246,8 @@
 #define SD_SLOT_8BITS_CARD_DETECT_VALUE    SD_MMC_0_CD_DETECT_VALUE
 #define SD_MMC_0_WP_GPIO                   AVR32_PIN_PX57
 #define SD_MMC_0_WP_DETECT_VALUE           1
-#define SD_SLOT_8BITS_WRITE_PROTECT        SD_MMC_0_WP_GPIO
-#define SD_SLOT_8BITS_WRITE_PROTECT_VALUE  SD_MMC_0_WP_DETECT_VALUE
+//#define SD_SLOT_8BITS_WRITE_PROTECT        SD_MMC_0_WP_GPIO
+//#define SD_SLOT_8BITS_WRITE_PROTECT_VALUE  SD_MMC_0_WP_DETECT_VALUE
 
 //! 4-bits connector pin
 #define SD_MMC_MCI_SLOT_1_SIZE             4
@@ -256,24 +256,24 @@
 #define SD_SLOT_4BITS                      1
 #define SD_SLOT_4BITS_CLK_PIN              AVR32_MCI_CLK_0_PIN
 #define SD_SLOT_4BITS_CLK_FUNCTION         AVR32_MCI_CLK_0_FUNCTION
-#define SD_SLOT_4BITS_CMD_PIN              AVR32_MCI_CMD_1_0_PIN
-#define SD_SLOT_4BITS_CMD_FUNCTION         AVR32_MCI_CMD_1_0_FUNCTION
-#define SD_SLOT_4BITS_DATA0_PIN            AVR32_MCI_DATA_8_0_PIN
-#define SD_SLOT_4BITS_DATA0_FUNCTION       AVR32_MCI_DATA_8_0_FUNCTION
-#define SD_SLOT_4BITS_DATA1_PIN            AVR32_MCI_DATA_9_0_PIN
-#define SD_SLOT_4BITS_DATA1_FUNCTION       AVR32_MCI_DATA_9_0_FUNCTION
-#define SD_SLOT_4BITS_DATA2_PIN            AVR32_MCI_DATA_10_0_PIN
-#define SD_SLOT_4BITS_DATA2_FUNCTION       AVR32_MCI_DATA_10_0_FUNCTION
-#define SD_SLOT_4BITS_DATA3_PIN            AVR32_MCI_DATA_11_0_PIN
-#define SD_SLOT_4BITS_DATA3_FUNCTION       AVR32_MCI_DATA_11_0_FUNCTION
-#define SD_MMC_1_CD_GPIO                   AVR32_PIN_PB08
+#define SD_SLOT_4BITS_CMD_PIN              AVR32_MCI_CMD_0_PIN
+#define SD_SLOT_4BITS_CMD_FUNCTION         AVR32_MCI_CMD_0_FUNCTION
+#define SD_SLOT_4BITS_DATA0_PIN            AVR32_MCI_DATA_0_PIN
+#define SD_SLOT_4BITS_DATA0_FUNCTION       AVR32_MCI_DATA_0_FUNCTION
+#define SD_SLOT_4BITS_DATA1_PIN            AVR32_MCI_DATA_1_PIN
+#define SD_SLOT_4BITS_DATA1_FUNCTION       AVR32_MCI_DATA_1_FUNCTION
+#define SD_SLOT_4BITS_DATA2_PIN            AVR32_MCI_DATA_2_PIN
+#define SD_SLOT_4BITS_DATA2_FUNCTION       AVR32_MCI_DATA_2_FUNCTION
+#define SD_SLOT_4BITS_DATA3_PIN            AVR32_MCI_DATA_3_PIN
+#define SD_SLOT_4BITS_DATA3_FUNCTION       AVR32_MCI_DATA_3_FUNCTION
+#define SD_MMC_1_CD_GPIO                   AVR32_PIN_PB11
 #define SD_MMC_1_CD_DETECT_VALUE           0
 #define SD_SLOT_4BITS_CARD_DETECT          SD_MMC_1_CD_GPIO
 #define SD_SLOT_4BITS_CARD_DETECT_VALUE    SD_MMC_1_CD_DETECT_VALUE
-#define SD_MMC_1_WP_GPIO                   AVR32_PIN_PB06
+#define SD_MMC_1_WP_GPIO                   AVR32_PIN_PX57
 #define SD_MMC_1_WP_DETECT_VALUE           1
-#define SD_SLOT_4BITS_WRITE_PROTECT        SD_MMC_1_WP_GPIO
-#define SD_SLOT_4BITS_WRITE_PROTECT_VALUE  SD_MMC_1_WP_DETECT_VALUE
+//#define SD_SLOT_4BITS_WRITE_PROTECT        SD_MMC_1_WP_GPIO
+//define SD_SLOT_4BITS_WRITE_PROTECT_VALUE  SD_MMC_1_WP_DETECT_VALUE
 //! @}
 
 /*! \name LCD Connections of the ET024006DHU display

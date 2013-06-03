@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include "sd_access.h"
+#include "conf_factory.h"
 #include "sd_mmc.h"
 #include "aes_dma.h"
 #include "ctrl_access.h"
@@ -17,7 +18,6 @@
 
 bool data_mounted;
 bool data_locked;
-static uint8_t hash_buf_cipher[HASH_LENGTH];
 static uint8_t src_buf[SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS];
 static uint8_t dest_buf[SD_MMC_BLOCK_SIZE * SD_BLOCKS_PER_ACCESS];
 static uint8_t old_hash_cipher_key[HASH_LENGTH];
@@ -50,17 +50,20 @@ void sd_access_init()
 }
 
 bool sd_access_unlock_drive(uint8_t* passwd) {
-	if (security_validate_pass(passwd)) {
-		sha2(passwd, MAX_PASS_LENGTH, hash_buf_cipher, 0);
-		aes_set_key(&AVR32_AES, (unsigned int *)hash_buf_cipher);
-		delay_ms(500);
-		secure_memset(hash_buf_cipher, 0, HASH_LENGTH);
+	if (!data_locked) {		
 		sd_access_mount_data();
-		sd_access_unlock_data();
 		return true;
 	} else {
 		return false;
 	}
+}
+
+void sd_access_factory_reset(bool first_run)
+{
+	security_password_reset(DEFAULT_ENCRYPTION, NULL);
+	security_user_config_reset();
+	if (first_run)
+		security_flash_write_factory_reset(false);
 }
 
 /* Changes the encryption level of the drive.
@@ -71,7 +74,7 @@ uint8_t sd_change_encryption(uint8_t slot, bool encrypt, bool change_key, uint8_
 	uint32_t i, nb_blocks;
 	encrypt_config_t *config_ptr = NULL;
 	
-	security_get_user_config(&config_ptr);
+	security_get_config(&config_ptr);
 	if ((encrypt == config_ptr->encryption_level) && !change_key)
 		return CTRL_GOOD;
 	
