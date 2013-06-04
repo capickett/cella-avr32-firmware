@@ -5,7 +5,7 @@
     <ProjectVersion>6.1</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC32.C</ToolchainName>
     <ProjectGuid>{30c09ac2-69d3-4174-806b-756d8cb12f70}</ProjectGuid>
-    <avrdevice>AT32UC3A3256S</avrdevice>
+    <avrdevice>AT32UC3A3128S</avrdevice>
     <avrdeviceseries>uc3a3_a4</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -18,8 +18,7 @@
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
-    <OverrideVtorValue>
-    </OverrideVtorValue>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfVersion>3.5.1</AsfVersion>
     <AsfFrameworkConfig>
@@ -261,7 +260,7 @@
       <ToolOptions>
         <InterfaceName>JTAG</InterfaceName>
         <InterfaceProperties>
-          <JtagDbgClock>10</JtagDbgClock>
+          <JtagDbgClock>0</JtagDbgClock>
           <SwdClock>249000</SwdClock>
           <JtagProgClock>200000</JtagProgClock>
           <IspClock>150000</IspClock>

@@ -62,8 +62,8 @@ void security_hash_pass_salt(uint8_t *password, uint8_t length, uint8_t *salt, u
 
 void security_flash_init()
 {
-	//if (!flashc_is_security_bit_active())
-		//flashc_activate_security_bit();
+	if (!flashc_is_security_bit_active())
+		flashc_activate_security_bit();
 }
 
 void security_factory_reset_init()
