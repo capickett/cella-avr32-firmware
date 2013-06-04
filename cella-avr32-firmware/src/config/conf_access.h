@@ -51,7 +51,7 @@
 /*! \name Activation of Logical Unit Numbers
  */
 //! @{
-#define LUN_0                ENABLE     //!< On-Chip Virtual Memory.
+#define LUN_0                DISABLE     //!< On-Chip Virtual Memory.
 #define LUN_1                DISABLE    //!< AT45DBX Data Flash.
 #define LUN_2                ENABLE     //!< SD/MMC Card over MCI Slot 0
 #define LUN_3                DISABLE    //!< SD/MMC Card over MCI Slot 1

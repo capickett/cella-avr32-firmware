@@ -50,23 +50,19 @@ static void usart_comm_write_string(uint8_t length, const char *str)
 
 static bool usart_comm_read_config(void) 
 {
-	int i, max;
-	uint8_t config_string[sizeof(encrypt_config_t)];
 	encrypt_config_t *config_ptr = NULL;
 	security_get_config(&config_ptr);
-	
-	max = sizeof(encrypt_config_t);
-	for (i = 0; i < max; ++i) {
-		config_string[i] = usart_getchar(USART_BT);
-	}
-	
-	uint8_t encrypt_level = ((encrypt_config_t *)config_string)->encryption_level;
+	encrypt_config_t new_config;
+		
+	char encrypt_char = usart_getchar(USART_BT);
+	uint8_t encrypt_level = encrypt_char - '0';
 	
 	if (encrypt_level > MAX_FACTOR || encrypt_level < MIN_FACTOR)
 		return false;
-	
+			
 	if (config_ptr->encryption_level != encrypt_level) {
-		security_flash_write_config((encrypt_config_t *)config_string);	
+		new_config.encryption_level = encrypt_level;
+		security_flash_write_config((encrypt_config_t *)&new_config);	
 	}
 				
 	return true;
@@ -85,7 +81,6 @@ __attribute__((__interrupt__))
 	__interrupt
 #endif
 static void process_data(void) {
-	LED_Toggle(LED0);
 	volatile int c;
 	c = usart_getchar(USART_BT);
 
@@ -106,10 +101,10 @@ static void process_data(void) {
 				break;
 			}
 			if (usart_comm_read_config()) {
+				usart_putchar(USART_BT, ACK_OK);
 				encrypt_config_t *config_ptr = NULL;
 				security_get_config(&config_ptr);
-				if (config_ptr->encryption_level == 2)
-					usart_comm_read_string(UUID_LENGTH, uuid_buf);
+				usart_comm_read_string(UUID_LENGTH, uuid_buf);
 				security_password_reset(config_ptr->encryption_level, uuid_buf);
 				security_memset(uuid_buf, 0, UUID_LENGTH);
 				usart_putchar(USART_BT, ACK_OK);
@@ -130,11 +125,17 @@ static void process_data(void) {
 			encrypt_config_t *config_ptr = NULL;
 			security_get_config(&config_ptr);
 			if (config_ptr->encryption_level == 0) {
+				usart_putchar(USART_BT, ACK_OK);
+				usart_comm_read_string(UUID_LENGTH, uuid_buf);
+				usart_putchar(USART_BT, ACK_OK);
 				sd_access_unlock_data();
 				usart_putchar(USART_BT, ACK_OK);
 				break;
 			} else if (config_ptr->encryption_level == 1) {
 				usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
+				usart_putchar(USART_BT, ACK_OK);
+				usart_comm_read_string(UUID_LENGTH, uuid_buf);
+				usart_putchar(USART_BT, ACK_OK);
 				if (security_validate_pass(password_buf, MAX_PASS_LENGTH)) {
 					usart_putchar(USART_BT, ACK_OK);
 				} else {
@@ -142,7 +143,9 @@ static void process_data(void) {
 				}
 			} else if (config_ptr->encryption_level == 2) {
 				usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
+				usart_putchar(USART_BT, ACK_OK);
 				usart_comm_read_string(UUID_LENGTH, uuid_buf);
+				usart_putchar(USART_BT, ACK_OK);
 				memcpy(multi_buf, uuid_buf, UUID_LENGTH);
 				memcpy(multi_buf + UUID_LENGTH, password_buf, MAX_PASS_LENGTH);
 				if (security_validate_pass(multi_buf, MAX_PASS_LENGTH + UUID_LENGTH)) {
@@ -174,14 +177,14 @@ static void process_data(void) {
 			}
 			encrypt_config_t *config_ptr = NULL;
 			security_get_config(&config_ptr);
+			usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
+			usart_putchar(USART_BT, ACK_OK);
+			usart_comm_read_string(UUID_LENGTH, uuid_buf);
 			if (config_ptr->encryption_level < 2) {
-				usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
 				security_write_pass(password_buf, MAX_PASS_LENGTH);
 				security_hash_aes_key(password_buf, MAX_PASS_LENGTH);
 				security_memset(password_buf, 0, MAX_PASS_LENGTH);
 			} else if (config_ptr->encryption_level == 2) {
-				usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
-				usart_comm_read_string(UUID_LENGTH, uuid_buf);
 				memcpy(multi_buf, uuid_buf, UUID_LENGTH);
 				memcpy(multi_buf + UUID_LENGTH, password_buf, MAX_PASS_LENGTH);
 				security_write_pass(multi_buf, MAX_PASS_LENGTH + UUID_LENGTH);
@@ -225,16 +228,6 @@ static void process_data(void) {
 		default:
 			usart_putchar(USART_BT, ACK_BAD);
 	}
-}
-
-void usart_comm_bt_reset()
-{
-	usart_comm_write_string(3, "$$$");
-	delay_ms(15);
-	//usart_comm_write_string(4, "SF,1");
-	//usart_comm_write_string(4, "SA,2");
-	//usart_comm_write_string(13, "SN,cella-0001");
-	usart_comm_write_string(3, "---");
 }
 
 /* USART Setup */

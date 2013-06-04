@@ -26,11 +26,13 @@ static uint8_t new_hash_cipher_key[HASH_LENGTH];
 void sd_access_mount_data()
 {
 	data_mounted = true;
+	LED_On(LED0);
 }
 
 void sd_access_unmount_data()
 {
 	data_mounted = false;
+	LED_Off(LED0);
 }
 
 void sd_access_lock_data()

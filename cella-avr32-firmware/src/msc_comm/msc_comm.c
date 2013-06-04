@@ -37,12 +37,10 @@ void msc_comm_init(void) {
 }
 
 bool file_exists(void) {
-	int lockfd;
-	if ((lockfd = open(LOCKFILE, O_RDONLY) >= 0)) {
-		close(lockfd);
-		return false;
-	}
-	return ((fd = open(CMDFILE, O_RDONLY) >= 0));
+	const FS_STRING file_name = "__cellaCMD";
+	bool result = (nav_filelist_findname(file_name, false));
+	if (result) LED_On(LED2);
+	else LED_Toggle(LED3);
 }
 
 static bool msc_comm_read_config(void)
