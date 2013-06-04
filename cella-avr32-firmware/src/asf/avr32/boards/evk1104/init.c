@@ -96,7 +96,7 @@ void board_init(void)
 	gpio_enable_module(SD_MMC_MCI_GPIO_MAP,
 			sizeof(SD_MMC_MCI_GPIO_MAP) / sizeof(SD_MMC_MCI_GPIO_MAP[0]));
 	gpio_enable_pin_pull_up(SD_MMC_0_CD_GPIO);
-	gpio_enable_pin_pull_up(SD_MMC_0_WP_GPIO);
+	//gpio_enable_pin_pull_up(SD_MMC_0_WP_GPIO);
 	gpio_enable_pin_pull_up(SD_MMC_1_CD_GPIO);
 	gpio_enable_pin_pull_up(SD_MMC_1_WP_GPIO);
 #endif

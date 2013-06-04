@@ -49,8 +49,6 @@ bool security_validate_pass(uint8_t *password, uint8_t length);
 
 void security_write_pass(uint8_t *password, uint8_t length);
 
-void security_write_factory_reset(bool reset);
-
 void security_get_hash(uint8_t **hash_ptr);
 
 void security_get_salt(uint8_t **salt_ptr);

@@ -15,20 +15,6 @@
 #include "flashc.h"
 #include "aes.h"
 #include "delay.h"
-
-#define HANDLE_SET_CONFIG		'c'
-#define HANDLE_GET_CONFIG		'g'
-#define HANDLE_INPUT_PASS		'p'
-#define HANDLE_UNLOCK			'k'
-#define HANDLE_SET_PASS			'n'
-#define HANDLE_ENCRYPT_QUERY	'?'
-#define HANDLE_RELOCK			'l'
-#define HANDLE_RESET			'r'
-#define HANDLE_UNMOUNT			'u'
-#define ACK_OK					'K'
-#define ACK_BAD					'~'
-#define ACK_UNLOCKED			'U'
-#define ACK_LOCKED				'L'
 	
 static uint8_t password_buf[MAX_PASS_LENGTH];
 static uint8_t uuid_buf[UUID_LENGTH];
@@ -54,11 +40,19 @@ static void usart_comm_read_string(uint8_t length, uint8_t *buf) {
 	}
 }
 
-static bool usart_comm_read_config(void) {
+static void usart_comm_write_string(uint8_t length, const char *str)
+{
+	int i;
+	for (i = 0; i < length; ++i) {
+		usart_putchar(USART_BT, str[i]);
+	}
+}
+
+static bool usart_comm_read_config(void) 
+{
 	int i, max;
 	uint8_t config_string[sizeof(encrypt_config_t)];
 	encrypt_config_t *config_ptr = NULL;
-	//encrypt_config_t new_config;
 	security_get_config(&config_ptr);
 	
 	max = sizeof(encrypt_config_t);
@@ -67,42 +61,21 @@ static bool usart_comm_read_config(void) {
 	}
 	
 	uint8_t encrypt_level = ((encrypt_config_t *)config_string)->encryption_level;
-	//char encrypt_char = usart_getchar(USART_BT);
-	//uint8_t encrypt_level = 0;
-	//if (encrypt_char == '1') {
-		//encrypt_level = 1;
-	//} else if (encrypt_char == '2') {
-		//encrypt_level = 2;
-	//}
-	//new_config.encryption_level = encrypt_level;
 	
 	if (encrypt_level > MAX_FACTOR || encrypt_level < MIN_FACTOR)
 		return false;
 	
 	if (config_ptr->encryption_level != encrypt_level) {
-		security_flash_write_config((encrypt_config_t *)config_string);
-		//security_flash_write_config((encrypt_config_t *)&new_config);	
+		security_flash_write_config((encrypt_config_t *)config_string);	
 	}
 				
 	return true;
 }
 
-static bool usart_comm_write_config(void) {
+static void usart_comm_write_config(void) {
 	encrypt_config_t *config_ptr = NULL;
 	security_get_config(&config_ptr);
-	uint8_t *config_byte_ptr = (uint8_t *)config_ptr;
-	int i;
-	for (i = 0; i < sizeof(*config_ptr); ++i) {
-		usart_putchar(USART_BT, config_byte_ptr[i]);
-	}
-	//if (!config_ptr->encryption_level) {
-		//usart_putchar(USART_BT, '0');
-	//} else if (config_ptr->encryption_level == 1) {
-		//usart_putchar(USART_BT, '1');
-	//} else if (config_ptr->encryption_level == 2) {
-		//usart_putchar(USART_BT, '2');
-	//}
-	return true;
+	usart_comm_write_string(sizeof(*config_ptr), (char *)config_ptr);
 }
 
 /* process data */
@@ -145,10 +118,6 @@ static void process_data(void) {
 			}
 			break;
 		case HANDLE_GET_CONFIG:
-			if (data_locked) {
-				usart_putchar(USART_BT, ACK_BAD);
-				break;
-			}
 			usart_comm_write_config();
 			usart_putchar(USART_BT, ACK_OK);
 			break;
@@ -162,6 +131,7 @@ static void process_data(void) {
 			security_get_config(&config_ptr);
 			if (config_ptr->encryption_level == 0) {
 				sd_access_unlock_data();
+				usart_putchar(USART_BT, ACK_OK);
 				break;
 			} else if (config_ptr->encryption_level == 1) {
 				usart_comm_read_string(MAX_PASS_LENGTH, password_buf);
@@ -255,6 +225,16 @@ static void process_data(void) {
 		default:
 			usart_putchar(USART_BT, ACK_BAD);
 	}
+}
+
+void usart_comm_bt_reset()
+{
+	usart_comm_write_string(3, "$$$");
+	delay_ms(15);
+	//usart_comm_write_string(4, "SF,1");
+	//usart_comm_write_string(4, "SA,2");
+	//usart_comm_write_string(13, "SN,cella-0001");
+	usart_comm_write_string(3, "---");
 }
 
 /* USART Setup */

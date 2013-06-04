@@ -14,4 +14,6 @@ typedef struct __attribute__((packed)) encrypt_config_st {
 
 void usart_comm_init(void);
 
+void usart_comm_bt_reset(void);
+
 #endif /* USART_COMM_H_ */
