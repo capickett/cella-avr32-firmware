@@ -19,13 +19,13 @@ static uint8_t password_buf[MAX_PASS_LENGTH];
 
 void msc_comm_init(void) {
 	
-	// b_fsaccess_init();
-	const uint8_t _MEM_TYPE_SLOW_ script_name[17] = 
-		{'.', 'c', 'e', 'l', 'l', 'a', '_', 'u', 'n', 'l', 'o', 'c', 'k', '.', 's', 'h', 0};
+
+	//const uint8_t _MEM_TYPE_SLOW_ script_name[17] = 
+	//	{'.', 'c', 'e', 'l', 'l', 'a', '_', 'u', 'n', 'l', 'o', 'c', 'k', '.', 's', 'h', 0};
 	
 	if (nav_drive_set(LUN_ID_VIRTUAL_MEM)) {
 		nav_drive_format(FS_FORMAT_DEFAULT);
-	
+		nav_partition_mount();
 		// TODO: get script into static array
 		uint8_t _MEM_TYPE_SLOW_* script_buf;
 		uint16_t script_size;
@@ -37,9 +37,9 @@ void msc_comm_init(void) {
 }
 
 bool file_exists(void) {
-	const FS_STRING file_name = "__cellaCMD";
-	bool result = (nav_filelist_findname(file_name, false));
-	if (result) LED_On(LED2);
+	char * file_name = "__cellaCMD";
+	if ((fd = open(file_name, O_RDONLY)) >= 0)
+		LED_On(LED2);
 	else LED_Toggle(LED3);
 }
 

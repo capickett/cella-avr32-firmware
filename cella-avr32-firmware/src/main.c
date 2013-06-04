@@ -70,8 +70,9 @@ int main(void)
 	sd_access_init();
 	aes_init();
 	entropy_init();
+	
+//	msc_comm_init();
 
-	security_flash_write_factory_reset(true);
 	security_factory_reset_init();
 		
 	/* USART SETUP */
@@ -89,15 +90,15 @@ int main(void)
 	// The main loop manages only the power mode
 	// because the USB management is done by interrupt
 	while (true) {
-		if (file_exists())
-			process_file();
-		
+//		if (file_exists())
+//			process_file();
+			
 		if (main_b_msc_enable) {
 			if (!udi_msc_process_trans()) {
-//				sleepmgr_enter_sleep();
+				sleepmgr_enter_sleep();
 			}
 		}else{
-//			sleepmgr_enter_sleep();
+			sleepmgr_enter_sleep();
 		}
 	}
 }

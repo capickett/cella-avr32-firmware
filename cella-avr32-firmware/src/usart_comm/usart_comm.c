@@ -119,7 +119,7 @@ static void process_data(void) {
 		case HANDLE_INPUT_PASS:
 			if (!data_locked) {
 				security_memset(password_buf, 0, MAX_PASS_LENGTH);
-				usart_putchar(USART_BT, ACK_OK);
+				usart_putchar(USART_BT, ACK_GO_AHEAD);
 				break;
 			}
 			encrypt_config_t *config_ptr = NULL;
@@ -228,6 +228,11 @@ static void process_data(void) {
 		default:
 			usart_putchar(USART_BT, ACK_BAD);
 	}
+}
+
+void usart_comm_bt_reset()
+{
+	usart_write_line(USART_BT, "$$$");
 }
 
 /* USART Setup */

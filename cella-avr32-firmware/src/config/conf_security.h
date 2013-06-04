@@ -22,6 +22,7 @@
 #define HANDLE_RESET			'r'
 #define HANDLE_UNMOUNT			'u'
 #define ACK_OK					'K'
+#define ACK_GO_AHEAD            'W'
 #define ACK_BAD					'~'
 #define ACK_UNLOCKED			'U'
 #define ACK_LOCKED				'L'
