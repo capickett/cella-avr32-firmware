@@ -47,8 +47,15 @@ void sd_access_unlock_data()
 
 void sd_access_init()
 {
-	data_mounted = false;
-	data_locked = true;
+  encrypt_config_t *user_config;
+  security_get_config(&user_config);
+  if (user_config->encryption_level == 0) {
+    data_mounted = true;
+    data_locked = false;
+  } else {
+	  data_mounted = false;
+	  data_locked = true;
+	}
 }
 
 bool sd_access_unlock_drive(uint8_t* passwd) {
